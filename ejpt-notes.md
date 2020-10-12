@@ -1,0 +1,157 @@
+- 01. Preliminary Skills - Prerequistes
+    - 110.Introduction
+        - Jargon used by IT professionals
+            - Black hat hacker
+            - white hat hacker
+            - User and a malicious user
+            - Root or administrator
+            - Privileges
+            - Security through obscurity
+            - Attack
+            - Privilege escalation
+            - Denial of service
+            - Remote Code Execution
+            - Shell Code
+        - Cryptography and VPN
+            - Clear-text protocols - transmit data over the network without any kind of transformation (encryption). Vulnerable to eavesdropping 
+            -  Cryptographic protocols - transform (encrypt) the information protocol to protect the communication
+            - Virtual Private Network (VPN) - uses cryptography to extend a private network over a public one, like the internet. Great example of protocol tunneling.
+        - Wireshark Introduction
+            - Wireshark is a network sniffer tool (allows you to see the data transmitted over the network to and from your computer)
+            - Video - Demo on Wireshark, capturing HTTP and HTTPS data - Conclusion, to tell that we can eavesdrop and see password transferred in HTTP, not in HTTPS (because its encrypted).
+        - Binary Arithmetic Basics
+            - Decimals (0-9)
+            - Binary (0 & 1)
+            - Bit-wise Operators
+                - NOT
+                - AND
+                - OR
+                - XOR
+                - Hexadecimal arithmetic (0x or h)
+    - 120.Networking
+        - Protocols
+            - In computer network, machines talk to each other by means of protocols. These protocols ensure that different computers, using different hardware and software, can communicate.
+            - Packets
+                - The primary goal of networking is to exchange information between networked computer; this information is carried by "packets". Packets are nothing but streams of bits running as electric signals on physical media used for data transmission.
+                - Every packet in every protocol has a header, and a payload.
+                - The header has a protocol-specific structure: this ensures that the receiving host can correctly interpret the payload and handle the overall communication.
+                - The payload is the actual information. IT could be something like part of an email message or the content of a file during a download.
+                - Example - The IP Header
+                    - The IP protocol header is at least 160 bits (20 bytes)![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F8XgVftOCL2.png?alt=media&token=10c15827-390c-4665-9cb6-29c28e23872c)
+                    - Using the information in the header, the nodes involved in the communication can understand and use IP packets.
+            - Protocol Layers
+                - List 
+                    - ^^Application layer^^
+                    - ^^Transport layer^^
+                    - ^^Network layer^^
+                    - ^^Physical layer^^
+                - These layers work on top of one another, and each has its own protocol
+                - Each layer serves the one above it -- The application layer does not need to know how to identify a process a host, how to reach it and how to use the copper wire to establish a communication. It just uses its underlying layers.
+            - ISO/OSI
+                - In 1984, the International Organization for Standardization (ISO) published a theoretical model for network systems communication: the Open System Interconnection (OSI) model.
+                - The ISO/OSI model was never implemented, but it is widely used in literature or when talking about IT networks. 
+                - ISO/OSI consists of seven layers and is used as a reference for the implementation of actual protocols
+                    - Application
+                    - Presentation
+                    - Session
+                    - Transport
+                    - Network
+                    - Data Link
+                    - Physical
+                - 
+            - Encapsulation
+                - The entire upper protocol packet (header plus payload) is the payload of the lower one; this is called encapsulation.
+                - IP protocol suite or TCP/IP, is a real-world implementation of a networking stack and is the protocol stack used on the Internet.
+                    - It has four layers:
+                        - Application
+                        - Transport 
+                        - Network or Internet
+                        - Data Link
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FZ9cqT-Dnp9.png?alt=media&token=de806722-9204-4990-8de8-e2aaa6f65b1a)
+                - During encapsulation every protocol adds its own header to the packet, treating it as a payload. This happens to every packet send by a host.
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F7-QcTnkyUk.png?alt=media&token=41d0847f-fbc7-4f75-a446-b6ea8b5ce103)
+                - The receiving host does the same operation in reverse order. Using this method, the application does not need to worry about how the transport, network and link layers work. It just hands in the packet to the transport layer.
+        - Internet Protocol (IP)
+            - The Internet Protocol (IP) is the protocol that runs on the Internet layer of the Internet Protocol suite, also known as TCP/IP.
+            - IP is in charge of delivering the datagrams (IP packets are called datagrams) to the hosts involved in a communication, and it uses IP addresses to identify a host.
+            - When you write a letter, you have to specify the recipient's address on the envelope before sending it. Similarly, the Internet uses its addressing scheme to deliver packets to the right destination.
+            - Any host on a computer network, be it a private network or public (the Internet), is identified by a unique IP address.
+            - IPv4 Addresses:
+                - The vast majority of networks run IP version 4 (IPv4)
+                - An IPv4 address consists of four byte, or octets; a byte consists of 8 bits
+                - A dot delimits every octet in the address
+                - You can represent upto 2^8 different values from 0 to 255
+                - This does not mean that you can assign any address starting from 0.0.0.0 to 255.255.255.255 to a host. Some addresses are reserved for special purposes.
+            - Reserved IPv4 Addresses:
+                - Some reserved intervals are:
+                    - 0.0.0.0 - 0.255.255.255 representing "this" network
+                    - 127.0.0.0 - 127.255.255.255 representing the local host (e.g., your computer)
+                    - 192.168.0.0 - 192.168.255.255 is reserved for private networks
+            - IP/Mask:
+                - To fully identify a host, you also need to know its network. To do that, you will need an IP address and a netmask, or subnet mask.
+                - With an IP/netMask pair, you can identify the network part and the host part of an IP address.
+                    - IP address: 192.168.5.100
+                    - Subnet mask: 255.255.255.0
+                - To find the network part you have to perform a bitwise AND operation between the netmask and the IP address.
+                - The inverse of the netmask lets you know how many hosts a network can contain.
+            -  Network and Broadcast Addresses:
+                - There are two special addresses:
+                    - One with the host part made all zeros. -- network address
+                    - Another with host part made by all ones -- broadcast address
+            - IPv6:
+                - IPv4 addresses are being consumed rapidly due to a large number of new devices connecting to the internet every day. One day IPv4 addresses might be exhausted.
+                - As a 32-bit addresses, IPv4 has 2^32 possible addresses
+                - While a 128-bit IPv6 address has 2^128 possible addresses
+                - An IPv6 address consists of 16-bit hexadecimal numbers separated by a colon (:). Hexadecimal numbers are case insensitive. In case zeros occur, they can be skipped.
+                - IPv6 header
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F-0mK6svqqj.png?alt=media&token=9d5acf1d-7d4a-473a-b83c-c71e7add5f10)
+                - IPv6 also has reserved addresses, which cannot be used like the reserved IPv4 ones.
+                - For example:
+                - ::1/128 is a loopback address
+                - ::FFFF:0:0/96 are IPv4 mapped addresses
+                - An IPv6 address can be split in half (64 bits each) into a network part and a device part.
+                - Further more, the first 64 bits ends with a dedicated 16-bits space (one hex word) that can be used only for specifying a subnet.
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2Fkz1GZpIyJu.png?alt=media&token=9838b164-9417-42d8-86b6-32d92f2f6c2c)
+                    - IPv6 addresses have three types:
+                        - Global Unicast Address - These addresses are global ones, and reside in global internet.
+                        - Unique Local and Link Local - reside only in Internal Networks.
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FwT3-NFG9-K.png?alt=media&token=c172349e-e096-436d-adb3-7e3f06937b31)
+                - IPv6 Subnets:
+                    - Like IPv4, an IPv6 address has a network portion and a device portion.
+                    - Unlike IPv4, an IPv6 address has a dedicated subnetting portion.
+                    - Network Address Range - In IPv6, the first 48 bits are for Internet global addressing.
+                    - Subnetting Range - The 16 bits from the 49th to the 64th are for defining subnets.
+                    - Device (Interface) Range - The last 64 bits are for device (interface) ID.
+                    - In IPv6, there are prefixes instead of subnets blocks. For example:`2001:1111:1234:1234::/64`
+                    - In the above IPv6 address, the number after the slash (64) is the number of bits that is sued for a prefix. Everything behind it can be used for hosts of the subnet.
+        - Routing
+            - Routers are devices connected to different networks at the same time. They are able to forward IP datagrams from one network to another. The forwarding policy is based on routing protocols.
+            - It determines the best path to reach a network.
+            - Behaves like a postman who tries to use the shortest path possible to deliver a letter.
+            - Routing Table:
+                - To choose the right forwarding interface, a router performs a lookup in the routing table (IP-to-interface binding).
+                - It also contains a default address (0.0.0.0), which is used when the router receives a packet whose destination is an unknown network. This gets triggered when the Destination IP address is not present in the routing table, it sends to the interface linked with 0.0.0.0.
+            - Routing Metrics
+                - During path discovery, routing protocols also assign a metric to each link.
+                - This ensures that, if two paths have the same number of hops, the fastest route is selected.
+                - The metric is selected according to the channel's estimated bandwidth and congestion.
+            - Checking the Routing Table:
+                - Routing tables are not only kept by routers; every host stores its own host.
+                - To check what they look like, you can use:
+                    - `ip route` on Linux
+                    - `route print` on Windows
+                    - `netstat -r` on OSX
+        - Link Layer Devices and Protocols
+            - Link Layer Devices:
+                - Hubs and switches are network devices that forward frames (layer 2 packets) on a local network.
+                - They work with link layer network address: MAC addresses.
+            - MAC addresses:
+                - IP addresses are the Layer 3 (Network layer) addressing scheme used to identify a host in a network, while MAC addresses uniquely identify a network card (Layer 2).
+                - A MAC (Media Access Control) address is also known as the physical address.
+                - It is 48-bit (6 bytes) long and expressed in hexadecimal form (HEX) `00:11:BB:33:44:FF`
+                - To discover the MAC address of the network cards installed on your computer, you can use:
+                    - `ipconfig` /all on Windows
+                    - `ifconfig` on Unix operating systems, like MacOS
+                    - `ip addr` on Linux
+            - IP and MAC addresses:
+                - Two different networks are connected together by a router
