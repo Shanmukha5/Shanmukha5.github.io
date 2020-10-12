@@ -1,0 +1,1000 @@
+- **Chapter 1: Getting Started with the Basics**
+    - Introductory Terms and Concepts
+        - Binaries: This term refers to files that can be executed, similar to executables in Windows. Binaries generally reside in the /usr/bin or /usr/sbin directory and include utilities such as ps, cat, ls, and cd.
+        - Directory: This is the same as a folder in Windows. A directory provides a way of organizing files, usually in a hierarchical manner.
+        - Home: Each user has their own /home directory, and this is generally where files you create will be saved by default.
+        - root: Like nearly every operating system, Linux has an administrator or superuser account, designed for use by a trusted person who can do nearly anything on the system. This would include such things as reconfiguring the system, adding users, and changing passwords. In Linux, that account is called root. As a hacker or pentester, you will often use the root account to give yourself control over the system. In fact, many hacker tools require that you use the root system.
+        - Script: This is a series of commands run in an interpretive environment that converts each line to source code.
+        - Shell: This is an environment and interpreter for running commands in Linux. The most widely used shell is bash, which stands for Bourne-again shell.
+        - Terminal: This is a command line interface (CLI)
+    - The Linux Filesystem
+    - Basic Commands in Linux
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d3969f49-37fe-427d-99db-213e794ed021/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d3969f49-37fe-427d-99db-213e794ed021/Untitled.png)
+- **Chapter 2: Text Manipulation**
+    - In Linux, nearly everything you deal with directly is a file, and most often these will be text files; for instance, all configuration files in Linux are text files. So to reconfigure an application, you simply open the configuration file, change the text, save the file, and then restart the application — your reconfiguration is complete.
+    - ### Grep Command - search or filter
+    - ### sed Command - substitute
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/287d87c6-6442-4e7f-ba08-01a47037f574/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/287d87c6-6442-4e7f-ba08-01a47037f574/Untitled.png)
+- **Chapter 3: Analyzing and Managing Networks**
+    - ifconfig: command is one of the most basic tools for examining and interacting with active network interfaces. You can use it to query your active network connections. This information from ifconfig enables you to connect to and manipulate your local area network (LAN) settings, an essential skill for hacking.
+        - eth0 - is short for Ethernet0 (Linux starts counting at 0 rather than 1). This is the first wired network connection.
+        - lo - short for loopback address and is sometimes called [localhost](http://localhost). This is a special software address that connects you to your own system. Software and services not running on your system can't use it. You would use lo to test something on your system, such as your own web server. The localhost is generally represented with the IP address 127.0.0.1
+        - wlan0 - appears only if you have a wireless interface or adapter.
+    - iwconfig: If you have a wireless adapter, you can use the iwconfig command to gather crucial information for wireless hacking such as the adapter's IP address, its MAC address, what mode it's in, and more.
+    - ## Changing your network information
+    - Being able to change your IP address and other network information is a useful skill because it will help you access other networks while appearing as a trusted device on those networks. For example, in a denial-of-service (DoS) attack, you can spoof your IP so that the attack appears to come from another source, thus helping you evade IP capture during forensic analysis. This is a relatively simple task in Linux, and it's done with the ifconfig command.
+    - ### Changing Your IP Address
+    - To change your IP address, enter ifconfig followed by the interface you want to reassign and the new IP address you want assigned to that interface. For example, to assign the IP address 192.168.181.115 to interface eth0, you would enter the following:
+    - ifconfig eth0 192.168.181.115
+    - When you do this correctly, Linux will simply return the command prompt and say nothing. This is a good thing!
+    - ### Changing Your Network Mask and Broadcast Address
+    - You can also change your network mask (netmask) and broadcast address with the ifconfig command. For instance, if you want to assign that same eth0 interface with a netmask of 255.255.0.0 and a broadcast address of 192.168.1.255, you would enter the following:
+    - ifconfig eth0 192.168.181.115 netmask 255.255.0.0 broadcast 192.168.1.255
+    - Once again, if you've done everything correctly, Linux responds with a new command prompt.
+    - ### Spoofing Your MAC Address
+    - You can also use ifconfig to change your MAC address (or HWaddr). The MAC address is globally unique and is often used as a security measure to keep hackers out of networks — or to trace them. Changing your MAC address to spoof a different MAC address is almost trivial and neutralizes those security measures. Thus, it's a very useful technique for bypassing network access controls.
+    - To spoof your MAC address, simply use the ifconfig command's down option to take down the interface (eth0 in this case). The enter the ifconfig command followed by the interface name (hw for hardware, ether for Ethernet) and the new spoofed MAC address. Finally, bring the interface back up with the up option for the change to take place.
+    - -> ifconfig eth0 down
+-> ifconfig eth0 hw ether 00:11:22:33:44:55
+-> ifconfig eth0 up
+    - ### Assigning New IP Addresses from the DHCP Server
+    - Linux has a Dynamic Host Configuration Protocol (DHCP) server that runs a daemon —  a process that runs in the background - called dhcpd, or the dhcp daemon. The DHCP server assigns IP addresses to all the systems on the subnet and keeps log files of which IP address is allocated to which machine at any one time. This makes it a great resource for forensic analysts to trace hackers with after an attack. For that reason, it's useful to understand how the DHCP server works.
+    - Usually, to connect to the internet from a LAN, you must have a DHCP-assigned IP. Therefore, after setting a static IP address, you must return and get a new DHCP-assigned IP address. To do this, you can always reboot your system, but I'll show you how to retrieve a new DHCP without having to shut your system down and restart it.
+    - To request an IP address from DHCP, simply call the DHCP server with the command dhclient followed by the interface you want the address assigned to. Different Linux distributions use different DHCP clients, but Kali is built on Debian, which uses dhclient. Therefore, you can assign a new address like this:
+    - dhclient eth0
+    - The dhclient command sends a DHCPDISCOVER request from the network interface specified (here, eth0). It then receives an offer (DHCPOFFER) from the DHCP server and confirm the IP assignment to the DHCP server with a dhcp request.
+    - Depending on the configuration of the DHCP server, the IP address assigned in each case might be different.
+    - ## Manipulating The Domain Name System
+    - Hacker can find a treasure trove of information on a target in its Domain Name System (DNS). DNS is a critical component of the internet, and although it's designed to translate domain names to IP address, a hacker can use it to garner information on the target.
+    - ### Examining DNS with dig
+        - One of the most useful commands for the aspiring hacker is "dig", which offers a way to gather DNS information about a target domain.
+        - The stored DNS information can be a key piece of early reconnaissance to obtain before attacking. This information could include the IP address of the target's nameserver (the server that translates the target's name to an IP address), the target's email server, and potentially any subdomains and IP addresses.
+    - dig example.com
+        - enter dig [example.com](http://example.com) and add the ns option (short for nameserver). The nameserver for [example.com](http://example.com) is displayed in the ANSWER SECTION. Also note in the ADDITIONAL SECTION that this dig query reveals the IP address of the DNS server serving [example.com](http://example.com)
+    - dig example.com ns
+    - Nameservers are the server, where our real DNS data is stored so that it is accessible by the internet. Nameservers contains all the A records, MX records, CNAME records.
+        - You can also use the dig command to get information on email servers connected to a domain by adding the mx option (MX is short for mail exchange server). This information is critical for attacks on email systems.
+    - dig example.com mx
+        - The most common Linux DNS server is the Berkeley Internet Name Domain (BIND). In some cases, Linux users will refer to DNS as BIND, but don't be confused: DNS and BIND both map individual domain names to IP addresses.
+    - ### Changing Your DNS Server
+        - In some cases, you may want to use another DNS server. To do so, you'll edit a plaintext file name /etc/resolv.conf on the system.
+        - Google's public DNS server at 8.8.8.8, we can also use it. By modifying the value with the nameserver in /etc/resolv.conf
+    - nameserver 8.8.8.8
+    - ### Mapping Your Own IP Address
+        - A special file on your system called the hosts file also performs domain name-IP address translation.
+        - The hosts file is located at /etc/hosts, and kind of as with DNS, you can use it to specify your own IP address—domain name mapping.
+    - -> nano /etc/hosts
+192.168.0.104 example.com
+        - By default, the hosts file contains only a mapping for your localhost, at 127.0.0.1, and your system's hostname.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c5c961b4-9342-4050-a762-fdbd578af704/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c5c961b4-9342-4050-a762-fdbd578af704/Untitled.png)
+- **Chapter 4: Adding and Removing Software**
+    - Software package, which is a group of files — typically libraries and other dependencies — that you need for a piece of software to run successfully. When you install a package, all the files within it are installed together, along with a script to make loading the software simpler.
+    - ## Using APT to Handle Software
+    - In Debian-based Linux distributions, which include Kali and Ubuntu, the default software manager is the Advanced Packaging Tool, or apt, whose primary command is apt-get.
+    - In its simplest and most common form, you can use apt-get to download and install new software packages, but you can also update and upgrade software with it.
+    - ### Searching for a Package
+    - Before downloading a software package, you can check whether the package you need is available from your repository, which is a place where your operating system stores information. The apt tool has a search function that can check whether the package is available. The syntax is straightforward.
+    - -> apt-cache search keyword
+    - ### Adding Software
+    - You can use apt-get to download the software. To install a piece of software from you operating system's default repository in the terminal, use the apt-get command, followed by the keyword install and then the name of the package you want o install. The syntax looks like this:
+    - -> apt-get install packagename
+    - ### Removing Software
+    - When removing software, use apt-get with the remove option, followed by the name of the software to remove:
+    - -> apt-get remove packagename
+    - The remove command doesn't remove the configuration files, which means you can reinstall the same package in the future without reconfiguring.
+    - If you do want to remove the configuration files at the same time as the package, you can use the purge option:
+    - -> apt-get purge packagename
+    - ### Updating Packages
+    - Software repositories will be periodically updates with new software or new versions of existing software. These updates don't reach you automatically, so you have to request them in order to apply these updates to your own system. Updating isn't the same as upgrading: updating simply updates the list of packages available for download from the repository, whereas upgrading will upgrade the package to the latest version in the repository.
+    - -> apt-get update
+    - ### Upgrading Packages
+    - To upgrade the existing packages on your system, use apt-get upgrade. Because upgrading your packages may make changes to your software, you must be logged in as root or use the sudo command before entereing apt-get upgrade.
+    - This command will upgrade every package on your system that apt knows about, meaning only those stored in the repository.
+    - -> apt-get upgrade
+    - ## Adding Repositories To Your Sources.List File
+        - The servers that hold the software for particular distribution of Linux are known as repositories.
+        - Nearly every distribution has its own repositories of software—developed and configured for that distribution—that might not work well, or at all, with other distributions.
+        - The repositories your system will search for software are stored in the sources.list file, and you can alter this file to define from which repositories you want to download software.
+        - You can find the sources.list file at /etc/apt/sources.list
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e29da7c6-1e61-4787-a9ce-00c2166dfcfa/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e29da7c6-1e61-4787-a9ce-00c2166dfcfa/Untitled.png)
+    - Many Linux distributions divide repositories into separate categories. For instance, Ubuntu breaks out its repository categories as follows:
+        - main - Contains supported open source software
+        - universe - Contains community-maintained open source software
+        - multiverse - Contains software restricted by copyright or other legal issues
+        - restricted - Contains proprietary device drivers
+        - backports - Contains packages from later releases.
+    - When you ask to download a new software package, the system looks sequentially through your repositories listed in sources.list and stops when it finds the desired package.
+    - ### Using a GUI-Based Installer
+    - Newer versions of Kali no longer include a GUI-based software installation tool, but you can always install one with the apt-get command. The two most common GUI-based installation tools are Synaptic and Gdebi.
+    - -> apt-get install synaptic
+    - Now you can search for the package you're looking for using Search tab to open a search window.
+    - ### Installing Software With GIT
+    - Sometimes the software you want isn't available in any of the repositories—especially if it's brand new—but it may be available on github, a site that allows developers to share their software with others to download, use, and provide feedback.
+    - Once you've found the software on github, you can install it from the terminal by entering the git clone command followed by its github URL.
+    - -> git clone <https://www.github.com/repository>
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a3c67543-f5b5-4686-acaf-d3c00344c516/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a3c67543-f5b5-4686-acaf-d3c00344c516/Untitled.png)
+- **Chapter 5: Controlling File and Directory Permissions**
+    - ### Different Types of Users
+        - In Linux, the root user is all-powerful. The root user can do basically anything on the system.
+        - Other users on the system have more limited capabilities and permissions and almost never have the access that the root user has.
+        - These other users are usually collected into groups that generally share a similar function.
+        - The root user is part of the root group by default. Each new user on the system must be added to a group in order to inherit the permissions of that group.
+    - ### Granting Permissions
+    - Each and every file and directory must be allocated a particular level of permission for the different identities using it. The three levels of permissions are as follows:
+        - Permission to read (r): This grants permission only to open and view a file.
+        - Permission to write (w): This allows users to view and edit a file.
+        - Permission to execute (x): This allows users to execute a file (but not necessarily view or edit it).
+    - When a file is created, typically the user who created it is the owner of the file, and the owning group is the user's current group.
+    - ### Granting Ownership to an Individual User
+    - To move ownership of a file to a different user so that they have the ability to control permissions, we can use the chown (or change owner) command:
+    - -> chown bob /tmp/bobsfile
+    - Here, we give the command, the name of the user we are giving ownership to, and then the location and name of the relevant file. This command grants the user account for Bob ownership of bobsfile.
+    - ### Granting Ownership to a Group
+    - To transfer ownership of a file from one group to another, we can use the chgrp (or change groups) command.
+    - -> chgrp security newIDS
+    - This command passes the security group ownership of newIDS.
+    - ### Checking Permissions
+    - When you want to find out what permissions are granted to what users for a file or directory, use the ls command with the -l (long) switch to display the contents of a directory in long format—this list will contain the permissions.
+    - -> ls -l
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/27617ee9-a802-4ce3-b3cb-01657d82b1c0/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/27617ee9-a802-4ce3-b3cb-01657d82b1c0/Untitled.png)
+    - The ls -l commands gives the output in 7 columns, they are:
+        - The file type
+        - The permissions on the file for owner, groups, and users, respectively.
+        - The number of links
+        - The owner of the file
+        - The size of the file in bytes
+        - When the file was created or last modified
+        - The name of the file
+    - ## Changing Permissions
+    - We can use the Linux command chmod (or change mode) to change the permissions. Only a root user or the file's owner can change permissions.
+    - We can use two different methods to change permissions:
+        - We use a numerical representation of permissions,
+        - We use a symbolic representation
+    - ### Changing Permissions with Decimal Notation
+        - We can use a shortcut to refer to permissions by using a single number to represent one rwx set of permissions.
+        - Like everything underlying the operating system, permissions are represented in binary, so ON and OFF switches are represented by 1 and 0, respectively.
+        - You can think of the rwx permissions as three ON/OFF switches, so when all permissions are granted, this equated to 111 in binary.
+        - A binary set like this is then easily represented as one digit by converting it into octal, an eight-digit number system that starts with 0 and ends with 7.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c3ef8e21-cacd-4f3a-94e8-791f00d8767c/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c3ef8e21-cacd-4f3a-94e8-791f00d8767c/Untitled.png)
+    - ### Changing Permissions with UGO
+    - Although the numeric method is probably the most common method for changing permissions in Linux, some people find chmod's symbolic method more intuitive—both methods work equally well, so just find the one that suits you.
+    - The symbolic method is often referred to as the UGO syntax, which stands for user (or owner), group, and others.
+    - UGO syntax is very simple. Enter the chmod command and then the users you want to change permissions for, providing u for user, g for group, or o for others, followed by one of three operators:
+        - Removes a permission
+            - Adds a permission
+        - = Sets a permission
+    - After the operator, include the permission you want to add or remove (rwx) and, finally, the name of the file to apply it to.
+    - -> chmod u+x file.txt #for one permission
+-> chmod u+r,u+w file.txt #for multiple permissions
+    - ### Giving Root Execute Permission on a New Tool
+    - As a hacker, you'll often need to download new hacking tools, but Linux automatically assigns all files and directories default permissions of 666 and 777, respectively. This means that, by default, you won't be able to execute a file immediately after downloading it.
+    - So we need to assign the permission to execute the file
+    - -> chmod 766 newhackertool
+    - ### Setting More Secure Default Permission with Masks
+    - As you have seen, Linux automatically assigns base permissions—usually 666 for files and 777 for directories. You can change the default permissions allocated to files and directories created by each user with the umask (or unmask) method. The umask method represents the permissions you want to remove from the base permissions on a file or directory to make them more secure.
+    - The umask is a three-digit number corresponding to the three permissions digits, but the umask number is subtracted from the permissions number to give the new permissions status. This means that when a new file or directory is created, its permissions are set to the default value minus the value in umask.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/09bedc8a-d887-4426-8cf3-e70477e8d72a/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/09bedc8a-d887-4426-8cf3-e70477e8d72a/Untitled.png)
+    - In Kali, as with most Debian systems, the umask is preconfigured to 022, meaning the Kali default is 644 for files and 755 for directories.
+    - The umask value is not universal to all users on the system. Each user can set a personal default umask value for the files and directories in their person .profile file. To see the current value when logged on as the user, simply enter the command umask and note what is returned. To change the umask value for a user, edit the file /home/username/.profile and, for example, add umask 007 to set it so only the user and members of the user's group have permissions.
+    - ## Special Permissions
+    - In addition to the three general-purpose permissions, rwx, Linux has three special permissions that are slightly more complicated. These special permissions are set user ID (or SUID), set group ID (or SGID), and sticky bit.
+    - ### Granting Temporary Root Permissions with SUID
+    - As you should know by now, a user can execute a file only if they have permission to execute that particular file. If the user only has read and/or write permission, they cannot execute. This may seem straightforward, but there are exceptions to this rule.
+    - You may have encountered a case in which a file requires the permissions of the root user during execution for all users, even those who are not root. For example, a file that allows users to change their password would need access to the /etc/shadow file—the file that holds the users' passwords in Linux—which requires root user privileges in order to execute. In such a case, you can temporarily grant the owner's privileges to execute the file by setting the SUID bit on the program.
+    - Basically, the SUID bit says that any user can execute the file with the permissions of the owner but those permissions don't extend beyond the use of that file.
+    - To set the SUID bit, enter a 4 before the regular permissions, so a file with a new resulting permission of 644 is represented as 4644 when the SUID bit is set.
+    - Setting the SUID on a file is not something a typical user would do, but if you want to do so, you'll use the chmod command, as in chmod 4644 filename.
+    - ### Granting the Root User's Group Permissions SGID
+    - SGID also grants temporary elevated permissions, but it grants the permissions of the file owner's group, rather than of the file's owner. This means that, with an SGID bit set, someone without execute permission can execute a file if the owner belongs to the group that has permission to execute that file.
+    - The SGID bit works slightly differently when applied to a directory: when the bit is set on a directory, ownership of new files created in that directory goes to the directory creator's group, rather than the file creator's group. This is very useful when a directory is shared by multiple users. All users in that group can execute the file(s), not just a single user.
+    - The SGID bit is represented as 2 before the regular permissions, so a new file with the resulting permissions 644 would be represented as 2644 when the SGID bit is set. Again, you would use the chmod command for this—for example, chmod 2644 filename.
+    - ### The Outmoded Sticky Bit
+    - The sticky bit is a permission bit that you can set on a directory to allow a user to delete or rename files within that directory. However, the sticky bit is a legacy of older Unix systems, and modern systems (like Linux) ignore it.
+    - ### Special Permissions, Privilege Escalation, and the Hacker
+    - As a hacker, these special permissions can be used to exploit Linux systems through privilege escalation, whereby a regular user gains root or sysadmin privileges and the associated permissions. With root privileges, you can do anything on the system.
+    - One way to do this is to exploit the SUID bit. A system administrator or software developer might set the SUID bit on a program to allow that program access to files with root privileges. For instance, scripts that need to change passwords often have the SUID bit set. You, the hacker, can use that permissions to gain temporary root privileges and do something malicious, such as get access to the passwords at /etc/shadow.
+    - Let's look for files with the SUID bit set on our Kali system to try this out. We'll use find command, its power to find files with the SUID bit set.
+    - In this case, we want to find files anywhere on the filesystem, for the root user or other sysadmin, with the permissions 4000. To do this, we can use the following find command:
+    - -> find / -user root -perm -4000
+    - With this command, we ask Kali to start looking at the top of the filesystem with the / syntax. It then looks everywhere below / for files that are owned by root, specified with user root, and that have the SUID permission bit set (-perm -4000).
+    - Linux has a well-developed system of security that protects files and directories from unauthorized access. The aspiring hacker needs to have a basic understanding of this system not only to protect their files but also to execute new tools and files. In some cases, hackers can exploit the SUID and SGID permissions to escalate privileges from a regular user to a root user.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5d9b404c-1663-4414-9fd5-3ae06ada12b4/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5d9b404c-1663-4414-9fd5-3ae06ada12b4/Untitled.png)
+- **Chapter 6: Process Management**
+    - A process is simply a program that's running and using resources.
+    - It includes a terminal, web server, any running commands, any databases, the GUI interface, and much more. Any good Linux administrator—and particularly a hacker—needs to understand how to manage their processes to optimize their systems. For example, once hacker takes control of a target system, they might want to find and stop a certain process, like an antivirus application or firewall. To do so, the hacker would first need to know how to find the process. The hacker might also want to set a scanning script to run periodically to find vulnerable systems.
+    - ### Viewing Processes
+    - The primary tool for viewing process—and one of the Linux administrator's best friends—is the ps command.
+    - The Linux Kernel, the inner core of the operating system that controls nearly everything, assigns a unique process ID (PID) to each process sequentially, as the processes are created. When working with these processes in Linux, you often need to specify their PIDs, so it is far more important to note the PID of the process than the name of the process.
+        - Running the ps command with the options aux will show all processes running on the system for all uers.
+    - -> ps aux
+        - The first process is init.
+    - Here are the most important columns in this output:
+        - USER - The user who invoked the process
+        - PID - The process ID
+        - %CPU - The percent of CPU this process is using
+        - %MEM - The percent of memory this process is using
+        - COMMAND - The name of the command that started the process
+    - ### Filtering by Process Name
+    - Use the ps aux command and then pipe it (|) to grep looking for the string processName
+    - -> ps aux | grep processName
+    - ### Finding the Greediest Processes with top
+    - When you enter the ps command, the processes are displayed in the order they were started, and since the kernel assigns PIDs in the order they have started, what you see are processes ordered by PID number.
+        - top command, it displays the processes ordered by resources used, starting with the largest.
+        - Unlike the ps command, which gives us a one-time snapshot of the processes, top refreshes the list dynamically—by default, every 10 seconds.
+    - -> top
+    - ## Managing Processes
+    - Hackers often need to multi-process, and an operating system like Kali is ideal for this. The hacker may have a port scanner running while running a vulnerability scanner and an exploit simultaneously. This requires that the hacker manage these processes efficiently to best use system resources and complete the task.
+    - ### Changing Process Priority with nice
+        - The nice command is used to influence the priority of a process to the kernel.
+    - The idea behind the use of the term nice is that, when you use it, you're determining how "nice" you'll be to other users: if your process is using most of the system resources, you aren't being very nice.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/047ccf71-4ce6-4e63-867a-3e58653458b6/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/047ccf71-4ce6-4e63-867a-3e58653458b6/Untitled.png)
+    - A higher nice value translates to a low priority, and a low nice value translates to a high priority (when you're not being so nice to other users and processes). When a process is started, it inherits the nice value of its parent process. The owner of the process can lower the priority of the process but cannot increase its priority. Of course, the superuser or root user can arbitrarily set the nice value to whatever they please.
+    - When you start a process, you can set the priority level with the nice command and then alter the priority after the process has started running with the renice command. The syntax for these two commands is slightly different and can be confusing. The nice command requires that you increment the nice value, whereas the renice command wants an absolute value for niceness.
+    - ### Setting the Priority When Starting a Process
+    - -> nice -n -10 /bin/slowprocess
+    - This command would increment the nice value by -10, increasing its priority and allocating it more resources.
+    - On the other hand, if we want to be nice to our fellow users and processes and give slow-process a lower priority, we could increment its nice value positively by 10:
+    - -> nice -n 10 /bin/slowprocess
+    - ### Changing the Priority of a Running Process with renice
+        - The renice command takes absolute values between -20 and 19 and sets the priority to that particular level, rather than increasing or decreasing from the level at which it started.
+        - In addition, renice requires the PID of the process you are targeting rather than the name.
+    - -> renice 20 6996
+    - As with nice, only the root user can renice a process to a negative value to give it higher priority, but any user can be nice and reduce priority with renice
+    - ### Killing Processes
+    - At times, a process will consume way too many system resources, exhibit unusual behavior, or—at worst—freeze. A process that exhibits this type of behavior is often referred to as a zombie process.
+    - The kill command has 64 different kill signals, and each does something slightly different. Here, we focus on a few you will likely find most useful. The syntax for the kill command is kill-signal PID, where the signal switch is optional. If you don't provide a signal flag, it defaults to SIGTERM.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/638cb138-ec89-41c3-abf6-f820ee7c6154/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/638cb138-ec89-41c3-abf6-f820ee7c6154/Untitled.png)
+    - ### Running Processes in the Background
+    - In Linux, whether you're working from the command line or the GUI, you're working within a shell. All commands that run are executed from within that shell, even if they run from the graphical interface. When you execute a command, the shell waits until the command is completed before offering another command prompt.
+    - At times, you may want a process to run in the background, rather than having to wait for it to complete in that terminal.
+    - To start a process in the background, just append an ampersand (&) to the end of command:
+    - -> leafpad newscript &
+    - ### Moving a Process to the Foreground
+    - If you want to move a process running in the background to the foreground, you can use the fg(foreground) command. The fg command requires the PID of the process you want to return to the foreground:
+    - -> fg 1234
+    - If you don't know the PID, you can use the ps command to find it.
+    - ## Scheduling Processes
+    - Both Linux system administrators and hackers often need to schedule processes to run at a particular time of day. A system administrator might want to schedule a system backup to run every Saturday night at 2 AM, for example. A hacker might want to set a script to run to perform reconnaissance on a regular basis, finding open ports or vulnerabilities.
+    - In Linux, you can accomplish this in at least two ways: with at and crond.
+    - The at command is a daemon—a background process—useful for scheduling a job to run once at some point in the future.
+    - The crontd is more suited for scheduling tasks to occur every day, week, or month.
+    - We use the at daemon to schedule the execution of a command or set of commands in the future. The syntax is simply the at command followed by the time to execute the process. The time argument can be provided in various formats.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e31abe34-5c84-47c9-9736-a9aea03182d3/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e31abe34-5c84-47c9-9736-a9aea03182d3/Untitled.png)
+    - -> at 7:00am
+at> /root/myscanningscript
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3e664492-9ecd-4255-b0ec-90fbfdbf6531/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3e664492-9ecd-4255-b0ec-90fbfdbf6531/Untitled.png)
+- **Chapter 7: Managing User Environment Variables**
+    - Technically, there are two types of variables: shell and environment.
+    - Environment variables are system-wide variables built into your system and interface that control the way your system looks, acts, and "feels" to the user, and they are inherited by any child shells or processes.
+    - Shell variables, on the other hand, are typically listed in lowercase and are only valid in the shell they are set in.
+    - Variables are simply strings in key-value pairs.
+    - In Kali Linux, your environment is your bash shell.
+    - Each user, including root, has a default set of environment variables that determine how the system looks, acts, and feels.
+    - ### Viewing and Modifying Environment Variables
+    - You can view all your default environment variables by entering "env" into your terminal from any directory:
+    - -> env
+    - Environment variables are always uppercase, as in HOME, PATH, SHELL, and so on. These are only the default environment variables that come on your system. A user can also create their own variables.
+    - ### Viewing All Environment Variables
+    - To view all environment variables, including shell variables, local variables, and shell functions such as any user-defined variables and command aliases, use the "set" command.
+    - -> set | more
+    - ### Filtering for Particular Variables
+    - You can use filtering command "grep" to find your variable of interest.
+    - Let's use the variable HISTSIZE as an example.
+    - -> set | grep HISTSIZE
+    - ### Changing Variable Values for a Session
+    - The HISTSIZE variable contains the value of the number of commands to store in the history file. Sometimes, you won't want your system to save past commands—perhaps because you don't want to leave any evidence of your activity on your own system or a target system.
+    - In that case, you can set the HISTSIZE variable to 0 so the system won't store any of your past commands.
+    - -> HISTSIZE=0
+    - ### Making Variable Value Changes Permanent
+        - When you change an environment variable, that change only occurs in that particular environment; in this case, that environment is the bash shell session.
+        - This means that when you close the terminal, any changes you made are lost, with values set back to their defaults.
+        - If you want to make the changes permanent, you need to use the export command. This command will export the new value from your current environment (the bash shell) to the rest of the system, making it available in every environment until you change and export it again.
+    - -> HISTSIZE=1
+-> export HISTSIZE
+    - ## Changing Your Shell Prompt
+    - Your shell prompt, another environment variable, provides you with useful information such as the user you're operating as and the directory in which you're currently working. The default shell prompt in Kali takes the following format:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0a80b8f3-7ab0-4e21-8e9a-31ab9901834d/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0a80b8f3-7ab0-4e21-8e9a-31ab9901834d/Untitled.png)
+    - You can change the name in the default shell prompt by setting the value for the PS1 variable. The PS1 variable has a set of placeholders for information you want to display in the prompt, including the following:
+        - \u - The name of the current user
+        - \h - The hostname
+        - \w - The base name of the current working directory
+    - ### Changing Your PATH
+    - One of the most important variables in your environment is your PATH variable, which controls where on your system your shell will look for commands you enter, such as cd, ls, and echo.
+    - Most commands are located in the sbin or bin subdirectory, like /usr/local/sbin or /usr/local/bin. If the bash shell doesn't find the command in one of the directories in your PATH variable, it will return the error, "command not found", even if that command does exist in a directory not in your PATH.
+    - Each directory is separated by a a colon(:)
+    - ### Adding to the PATH variable
+    - You can probably see why it's important to know what is in your PATH variable: if you downloaded and installed a new tool—let's say newhackingtool—into the /root/newhackingtool directory, you could only use commands from that tool when you're in that directory because that directory is not in the PATH variable. Every time you wanted to use that tool, you would first have to navigate to /root/newhackingtool, which is a bit inconvenient if you want to use the tool often.
+    - To be able to use this new tool from any directory, you need to add the directory holding this tool to your PATH variable.
+    - -> PATH=$PATH:/root/newhackingtool
+    - Adding to PATH can be a useful technique for directories you can use often, but be careful not to add too many directories to your PATH variable. Because the system will  have to search through each and every directory in PATH to find commands, adding a lot of directories could slow down your terminal and your hacking.
+    - ## How Not to Add to the PATH Variable
+    - One mistake commonly made by new Linux users is assigning a new directory, such as /root/newhackingtool, directly to the PATH variable in this way:
+    - -> PATH=/root/newhackingtool
+    - If you use this command, your PATH variable will only contain the /root/newhackingtool directory and no longer certain the system binaries directories such as /bin, /sbin, and others that hold critical commands.
+    - Remember that you want to append to the PATH variable, not replace it. If you're in doubt, save the contents of the variable somewhere before you modify it.
+    - ### Creating a User-defined Variable
+    - You can create your own custom, user-defined variables in Linux by assigning a value to a new variable that you name. This may be useful when you are doing some more advanced shell scripting or find you're often using a long command that you get tired of typing over and over.
+    - -> MYNEWVARIABLE="Hacking is the most valuable skill set in the 21st century"
+-> echo $MYNEWVARIABLE
+    - Just like our system environment variables, user-defined variables must be exported to persist to new sessions.
+    - If you want to delete this new variable, or any variable, use the unset command. Always think before deleting a system variable, though, because your system will probably operate much differently afterward
+    - -> unset MYNEWVARIABLE
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/336b7016-6d6e-4b95-ad2c-9623c4336e6d/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/336b7016-6d6e-4b95-ad2c-9623c4336e6d/Untitled.png)
+- **Chapter 8: Bash Scripting**
+    - ### A Crash Course in BASH
+        - A shell is an interface between the user and the operating system that enables you to manipulate files and run commands, utilities, programs, and much more.
+        - The advantage of shell is that you perform these tasks immediately from the computer and not through an abstraction, like a GUI, which allows you to customize your task to your needs.
+        - A number of different shells are available for Linux, including the Korn shell, the Z shell, the C shell, and the Bourne-again shell, more widely known as BASH.
+    - ### Your First Script: "Hello, World!"
+    - To start, you need to tell your operating system which interpreter you want o use for the script. To do this, enter a shebang, which is a combination of a hash mark and an exclamation mark:
+    - #!
+    - You the follow the shebang(#!) with /bin/bash to indicate that you want the operating system to use the bash shell interpreter.
+    - .
+    - #!/bin/bash
+
+#This is a comment
+echo "Hello, World!"
+    - ### Setting Execute Permissions
+    - By default, a newly created bash is not executable even by you, the owner. We need to set execute permission:
+    - -> chmod 755 HelloWorldScript
+    - The script is now ready to execute
+    - ### Running HelloWorldScript
+    - To run our simple script, enter the following:
+    - -> ./HelloWorldScript
+    - Success! You just completed your first shell script
+    - ### Adding Functionality with Variables and User Input
+        - A variable is an area of storage that can hold something in memory. That "something" might be some letters or words (strings) or numbers.
+        - It's known as a variable because the values held within it are changeable; this is an extremely useful feature for adding functionality to a script.
+    - In our next script, we will add functionality to prompt the user for their name, place whatever they input into a variable, then prompt the user, and place that keyboard input into a variable. After that, we'll echo a welcome message that includes their name
+    - #!/bin/bash
+
+echo "What is your name?"
+
+read name
+echo "Welcome " $name
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/47aafa03-0877-4311-92ba-e117a3def711/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/47aafa03-0877-4311-92ba-e117a3def711/Untitled.png)
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1bb7032f-c29c-46a4-ae9d-2e8eb4a7380f/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1bb7032f-c29c-46a4-ae9d-2e8eb4a7380f/Untitled.png)
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/354c9255-8d96-4ff3-a5c2-2da1a13e5933/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/354c9255-8d96-4ff3-a5c2-2da1a13e5933/Untitled.png)
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a054e380-404f-4400-b9a9-8693e68b6e32/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a054e380-404f-4400-b9a9-8693e68b6e32/Untitled.png)
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d2f71b11-a04a-4219-8fa5-5297dec51e8f/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d2f71b11-a04a-4219-8fa5-5297dec51e8f/Untitled.png)
+- **Chapter 9: Compressing and Archiving**
+    - ### What is Compression?
+        - Compression, as the name implies, makes data smaller, thereby requiring less storage capacity and making the data easier to transmit.
+        - For your purposes as a beginning hacker, it will suffice to categorize compression as either lossy or lossless.
+        - Lossy compression is very effective in reducing the size of files, but the integrity of the information is lost. In other words, the file after compression is not exactly the same as the original. This type of compression works great for graphics, video, and audio files, where a small difference in the file is hardly noticeable—.mp3, .mp4, .png, and .jpg are all lossy compression algorithms.
+        - The strengths of lossy compression are its efficiency and effectiveness. The compression ratio is very high, meaning that the resulting file is significantly smaller than the original.
+        - However, lossy compression is unacceptable when you're sending files or software and data integrity is crucial. For example, if you are sending a script or document, the integrity of the original file must be retained when it is decompressed.
+        - Lossless compression is not as efficient as lossy compression, as you might image, but for the hacker, integrity is often far more important than compression ratio.
+    - ### Tarring Files Together
+        - Usually, the first thing you do when compressing files is to combine them into an archive.
+        - In most cases, when archiving files, you'll use the "tar" command. Tar stands for tape archive, a reference to the prehistoric days of computing when systems used tape to store data.
+        - The "tar" command creates a single file from many files, which is then referred to as an archive, tar file, or tarball.
+    - -> ls
+fileOne
+fileTwo
+fileThree
+-> tar -cvf files.tar fileOne fileTow fileThree
+    - Let's break down this command to better understand it. The archiving command is "tar", and we're using it here with three options. The "c" option means create, "v" (stands for verbose and is optional) lists the files that tar is dealing with, and "f" means write to the following file. The last option will also work for reading from files. Then we give the new archive the filename you want to create from the three scripts: files.tar
+    - Archiving process adds some extra bytes. Although this overhead can be significant with small files, it becomes less and less significant with larger and larger files.
+    - We can display those files from the tarball, without extracting them, by using the tar command with "-t" content list switch:
+    - -> tar -tvf files.tar
+fileOne
+fileTwo
+fileThree 
+#not like this but in ls -l format
+    - You can then extract those files from the tarball using the "tar" command with "-x" (extract) switch:
+    - -> tar -xvf files.tar
+fileOne
+fileTwo
+fileThree
+    - Because you're still using "-v" switch, this command will show which files are being extracted in the output.
+    - If you want to extract the files and do so "silently," meaning without showing any output, you can simply remove "-v" (verbose):
+    - -> tar -xf files.tar
+    - Note that by default, if an extracted file already exists, "tar" will remove the existing file and replace it with the extracted file.
+    - ## Compressing Files
+    - Now we have one archived file, but that file is bigger than the sum of the original files. What if you want to compress those files for ease of transport? Linux has several commands capable of creating compressed files:
+        - gzip, which uses the extension .tar.gz or .tgz
+        - bzip2, which uses the extension .tar.bz2
+        - compress, which uses the extension .tar.z
+    - These all are capable of compressing our files, but they use different compression algorithms and have different compression ratios.
+    - In general, compress is the fastest, but the resultant files are larger; bzip2 is the slowest, but the resultant files are the smallest; and gzip falls somewhere in between.
+    - ### Compressing with gzip
+    - Let's try "gzip" (GNU zip) first, as it is the most commonly used compression utility in Linux.
+    - -> gzip files.tar
+    - We can then decompress that same file by using the "gunzip" command, short for GNU unzip:
+    - -> gunzip files.tar.gz
+    - It's worth noting that "gzip" can also be used to extract ".zip" files.
+    - ### Compressing with bzip2
+    - Another of the other widely used compression utilities in Linux is bzip2, which works similarly to gzip but has better compression ratios, meaning that the resulting file will be ever smaller
+    - -> bzip2 files.tar
+#resulting file - files.tar.bz2
+    - Note that the file extension is now .tar.bz2
+    - To decompress the compressed file, use bunzip2:
+    - -> bunzip2 files.tar.bz2
+    - When you do, the files returns to its original size, and its file extension returns to .tar.
+    - ### Compressing with compress
+    - Finally, you can use the command "compress" to compress the file. This is probably the least commonly used compression utility, but it's easy to remember.
+    - -> compress files.tar
+    - Note the file extension now is .tar.Z (with an uppercase Z).
+    - To decompress the same file, use uncompress:
+    - -> uncompress files.tar.Z
+    - ## Creating Bit-by-Bit or Physical Copies of Storage Devices
+    - Within the world of information security and hacking, one Linux archiving command stands above the rest in its usefulness. The "dd" command makes a bit-by-bit copy of a file, a filesystem, or even an entire hard drive. This means that even deleted files are copied (yes, it's important to know that your deleted files may be recoverable), making for easy discovery and recovery. Deleted files will not be copied with most logical copying utilities, such as "cp".
+    - Once a hacker has owned a target system, the "dd" command will allow them to copy the entire hard drive or a storage device to their system. In addition, those people whose job it is to catch hackers—namely, forensic investigators-will likely use this command to make a physical copy of the hard drive with deleted files and other artifacts that might be useful for finding evidence against the hacker.
+    - It's critical to note that the "dd" command should not be used for typical day-to-day copying of files and storage devices because it is very slow; other commands do the job faster and more efficiently. It is, though, excellent when you need a copy of a storage device without the filesystem or other logical structures, such as in a forensic investigation.
+    - The basic syntax for the "dd" command is as follows:
+    - -> dd if=inputfile of=outputfile
+    - So, if you wanted to make a physical copy of your flash drive, assuming the flash drive is "sdb":
+    - -> dd if=/dev/sdb of=/root/flashcopy
+    - Numerous options are available to use with the "dd" command, and you can do a bit of research on these, but among the most useful are the "noerror" option and the "bs" (block size) option. As the name implies, the "noerror" option continues to copy even if errors are encountered. The "bs" option allows you to determine the block size (the number of bytes read/written per block) of the data being copies. By default, it is set to 512 bytes, but it can be changed to speed up the process. Typically, this would be set to the sector size of the deviccce, most often 4KB (4,096 bytes).
+    - -> dd if=/dev/sdb of=/root/flashcopy bs=4096 conv:noerror
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ad52dd05-f007-48dd-a3fa-7ad102eb8782/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ad52dd05-f007-48dd-a3fa-7ad102eb8782/Untitled.png)
+- **Chapter 10: Filesystem and Storage Device Management**
+    - Mounting in this context simply means attaching drives or disks to the filesystem to make them accessible to the operating system (OS).
+    - ## The Device Directory /DEV
+    - Linux has a special directory that contains files representing each attached device: the appropriately named /dev directory.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8b985b1a-e2c9-462a-8405-cec7e6c9387b/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8b985b1a-e2c9-462a-8405-cec7e6c9387b/Untitled.png)
+    - When you long list (ls -l) the /dev directory, the devices are displayed in alphabetical order by default. You may recognize some of the devices, such a cdrom and cpu, but others have rather cryptic names.
+    - Each device on your system is represented by a file in the /dev directory, including devices you've probably never used or even realized existed. On the off change you do, there is a device file waiting to be used for it.
+    - If you scroll down this screen a bit, you should see more listings of devices. Of particular interest are the devices sda1, sda2, sda3, sdb, and sdb1, which are the hard drive and its partitions and a USB flash drive and its partitions.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/86b4b969-336d-4e17-b446-c26cbaeda7da/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/86b4b969-336d-4e17-b446-c26cbaeda7da/Untitled.png)
+    - ### How Linux Represents Storage Devices
+    - Linux uses logical labels for drives that are then mounted on the filesystem. These logical labels will vary depending on where the drives are mounted, meaning the same hard drive might have different labels at different times, depending on where and when it's mounted.
+    - Originally, Linux represented floppy drives as fd0 and hard drives as hda. You will still occasionally see these drive representations on legacy Linux systems, but today most floppy drives are gone. Even so, old legacy hard drives that used an IDE or E-IDE interface are still represented in the form hda. Newer Serial ATA (SATA) interface drives and Small Computer System Interface (SCSI) hard drives are represented as sda. Drives are sometimes split up into sections known as partitions, which are represented in the labeling system with numbers.
+    - When systems have more than one hard drive, Linux simply names them serially by incrementing the last letter in alphabetical order, so the first drive is sda, and the second drive is sdb, the third drive is sdc, and so on. The serial letter after sd is often referred to as the major number.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3ebfcb99-6a69-48bb-9d06-38c626b9975f/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3ebfcb99-6a69-48bb-9d06-38c626b9975f/Untitled.png)
+    - ### Drive Partitions
+    - Some drives can be split into partitions in order to manage and separate information. For instance, you may want to separate your hard drive so that your swap file, home directory, and / directory are all on separate partitions—you might want to do this for a number of reasons, including to share resources and to relax the default permissions. Linux labels each partition with a minor number that comes after the drive designation. This way, the first partition on the first SATA drive would be sda1. The second partition would then be sda2, the third sda3, and so on.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bf09ef96-67ea-4bc4-b421-6e9e912d37a1/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bf09ef96-67ea-4bc4-b421-6e9e912d37a1/Untitled.png)
+    - At times, you may want to view the partitions on your Linux system to see which ones you have and how much capacity is available in each. You can do this by using the fdisk utility. Using "-l" switch with fdisk lists all the partitions of all the drives:
+    - Linux uses a number of different types of filesystems, but the most common are ext2, ext3, and ext4. These are all iterations of the ext (or extended) filesystem, with ext4 being the latest.
+    - ### Character and Block Devices
+    - Something else to note about the naming of device files in the /dev directory is that the first position contains either "c" or "b".
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/818851af-45ee-40ab-b81f-0c589bba9e1c/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/818851af-45ee-40ab-b81f-0c589bba9e1c/Untitled.png)
+    - These letters represent the two ways that devices transfer data in and out. The "c" stands for character, and these devices are known, as you might expect, as character devices. External devices that interact with the system by sending and receiving data character by character, such as mice or keyboards, are character devices.
+    - The "b" stands for the second type: block devices. They communicate in blocks of data (multiple bytes at a time) and include devices like hard drives and DVD drives. These devices require higher-speed data throughput and therefore send and receive data in blocks (many characters or bytes at a time). Once you know whether a device is a character or block device, you can easily get more information about.
+    - ### List Block Devices and Information with lsblk
+    - The Linux command lsblk, short for list block, lists some basic information about each block device listed in /dev. The result is similar to the output from fdisk -l, but it will also display devices with multiple partitions in a kind of tree, showing each device with its partitions as branches, and does not require root privileges to run.
+    - -> lsblk
+    - ## Mounting and Unmounting
+    - Most modern operating systems, including most new version of Linux, automount storage devices when they're attached, meaning the new flash drive or hard drive is automatically attached to the filesystem.
+    - A storage device must be first physically connected to the filesystem and then logically attached to the filesystem in order for the data to be made available to the operating system. In other words, even if the device is physically attached to the system, it is not necessarily logically attached and available to the operating system. The term mount is a legacy from the early days of computing when storage tapes (before hard drives) had to be physically mounted to the computer system.
+    - As mentioned, the point in the directory tree where devices are attached is known as the mount point. The two main mount points in Linux are /mnt and /media. As a general rule, internal hard drives are mounted at /mnt, and external USB devices such as flash drives and external USB hard drives are mounted at /media, though technically any directory can be used.
+    - ### Mounting Storage Devices Yourself
+    - In some versions of Linux, you need to mount a drive manually in order to access its content, so this is a skill worth learning. To mount a drive on the filesystem, use the mount command. The mount point for the device should be an empty directory; if you mount a device on a directory that has subdirectories and files, the mounted device will cover the contents of the directory, making them invisible and unavailable. So, to mount the new hard drive sdb1 at the /mnt directory, you would enter the following:
+    - -> mount /dev/sdb1 /mnt
+    - That hard drive should then be available for access. If you want to mount the flash drive sdc1 at the /media directory, you would enter this:
+    - -> mount /dev/sdc1 /media
+    - The filesystems that are mounted on a system are kept in a file at /etc/fstab (short for filesystem table), which is read by the system at every bootup.
+    - ### Unmounting with umount
+    - If you're coming from a Mac or Wiindows background, you've probably unmounted a drive without knowing it. Before you remove a flash drive from your system, you "eject" it to keep from causing damage to the files stored on the device. Eject is just another word for unmount.
+    - Similar to the mount command, you can unmount a second hard drive by entering the umount command followed by the file entry of the device in the /dev directory, such as /dev/sdb.
+    - Note that the command is not spelled unmount but rather umount (no n).
+    - -> umount /dev/sdb1
+    - You cannot unmount a device that is busy, so if the system is reading or writing to the device, you will just receive an error.
+    - ## Monitoring Filesystems
+    - ### Getting Information on Mounted Disks
+    - The command "df" (for disk free) will provide us with basic information on any hard disks or mounted devices, such as CD, DVD, and flash drives, including how much space is being used and how much is available. Without any options, df defaults to the first drive on your system (in this case, sda). If you want to check a different drive, simply follow the "df" command with the drive representation you want to check (for example, df sdb).
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cd7aa98c-c34a-44c6-8dbe-1f7576133a29/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cd7aa98c-c34a-44c6-8dbe-1f7576133a29/Untitled.png)
+    - sd - SATA hard drive
+    - a - First hard drive
+    - 1 - First partition on that drive
+    - ### Checking for Errors
+    - The fsck command (short for filesystem check) checks the filesystem for errors and repairs the damage, if possible, or else  puts  the bad area into a bad blocks table to mark it as bad. To run the fsck command, you need to specify the filesystem type (the default is ext2) and the device file to check. It's important to note that you must unmount the drive before running a filesystem check. If you fail to unmount the mounted device, you will receive the error message.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/847b4b19-b583-4144-be46-2cc6998da30e/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/847b4b19-b583-4144-be46-2cc6998da30e/Untitled.png)
+    - So, the first step when performing a filesystem check is to unmount the device.
+    - -> umount /dev/sdb1
+    - I can add the -p option to have fsck automatically repair any problems with the device:
+    - -> fsck -p /dev/sdb1
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3e94aa6f-5b01-4fc7-9d0d-a8e73bd6fba3/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3e94aa6f-5b01-4fc7-9d0d-a8e73bd6fba3/Untitled.png)
+- **Chapter 11: The Logging System**
+    - Log files store information about events that occur when the operating system and applications are run, including any errors and security alerts.
+    - ## The Rsyslog Logging Daemon
+    - Linux uses a daemon called syslogd to automatically log events on your computer. Several variations of syslog, including rsyslog and syslog-ng, are used on different distributions of Linux, and even though they operate very similarly, some minor differences exist. Since Kali Linux is built on Debian, and Debian comes with rsyslog by default. If you want to use other distributions, it's worth doing a little research on their logging systems.
+    - -> locate rsyslog
+    - The one we want to examine is the configuration file rsyslog.conf
+    - ### The rsyslog Configuration File
+    - Like nearly every application in Linux, rsyslog is managed and configured by a plaintext configuration file located, as is generally the case in Linux, in the /etc directory. In the case of rsyslog, the configuration file is located at /etc/rsyslog.conf.
+    - In that rsyslog.conf file, if you navigate down to below line 50, you'll find the Rules section. This is where you can set the rules for what your Linux system will automatically log for you.
+    - ### The rsyslog Logging Rules
+    - The rsyslog rules determine what kind of information is logged, what programs have their messages logged, and where that log is stored. As a hacker, this allows you to find out what is being logged and where those logs are written so you can delete or obscure them.
+    - Each line is a separate logging rule that says what messages are logged and where they're logged to. The basic format for these rules is as follows:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/deea6e7d-5992-4afe-9163-62bd0cba72df/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/deea6e7d-5992-4afe-9163-62bd0cba72df/Untitled.png)
+    - The facility keyword references the program, such as mail, kernel, or lpr, whose messages are being logged. The priority keyword determines what kind of messages to log for that program. The action keyword, on the far right, references the location where the log will be sent. Let's look at each section more closely, beginning with the facility keyword, which refers to whatever software is generating the log, whether that's the kernel, the mail system, or the user.
+    - The following is a list of valid codes that can be used in place of the facility keyword in our configuration file rules:
+        - auth/authpriv - Security/authorization messages
+        - cron - Clock daemons
+        - daemon - Other daemons
+        - kern - Kernel messages
+        - lpr - Printing system
+        - mail - Mail system
+        - user - Generic user-level messages
+    - An asterisk wildcard (*) in place of a word refers to all facilities. You can select more than one facility by listing them separated by a comma.
+    - The priority tells the system what kinds of messages to log. Codes are listed from lowest priority, starting at debug, to highest priority, ending at panic. If the priority is *, messages of all priorities are logged. When you specify a priority, messages of that priority and higher are logged. For instance, if you specify a priority code of alert, the system will log messages classified as alert and higher priority, but it won't log messages marked as crit or any priority lower than alert.
+    - Here's the full list of valid codes for priority:
+        - debug
+info
+notice
+warning
+warn
+error
+err
+crit
+alert
+emerg
+panic
+    - The codes warning, warn, error, err, emerg, and panic have all been deprecated and should not be used.
+    - The action is usually a filename and location where the logs should be sent. Note that generally, log files are sent to the /var/log directory with a filename that describes the facility that generated them, such as auth. This means, for example, that logs generated by the auth facility would be sent to /var/log.auth.log
+    - ## Automatically Cleaning up Logs with LOGROTATE
+    - Log files take up space, so if you don't delete them periodically, they will eventually fill your entire hard drive. On the other hand, if you delete your log files too frequently, you won't have logs to investigate at some future point in time. You can use logrotate to determine the balance between these opposing requirements by rotating your logs.
+    - Log rotation is the process of regularly archiving log files by moving them to some other location, leaving you with a fresh log file. That archived location will then get cleaned up after a specified period of time.
+    - Your system is already rotating log files using a cron job that employs the logrotate utility. You can configure the logrotate utility to choose the regularity of your log rotation with the /etc/logrotate.conf text file.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/62224556-5302-4795-8cf1-05402e8d95db/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/62224556-5302-4795-8cf1-05402e8d95db/Untitled.png)
+    - ## Remaining Stealthy
+    - Once you've compromised a Linux system, it's useful to disable logging and remove any evidence of your intrusion in the log files to reduce the chances of detection. There are many ways to do this, and each carries its own risks and level of reliability.
+    - ### Removing Evidence
+    - First, you'll want to remove any logs of your activity. You could simply open the log files and precisely remove any logs detailing your activity, line by line. However, this could be time-consuming and leave time gaps in the log files, which would look suspicious. Also, deleted files are generally be recovered by a skilled forensic investigator.
+    - A better and more secure solution is to shred the log files. With other file deletion systems, a skilled investigator is still able to recover the deleted files, but suppose there was a way to delete the file and overwrite it several times, making it much harder to recover. Lucky for us, Linux has a built-in command, appropriately named shred, for just this purpose.
+    - The "shred" command has many options. In its most basic form, the syntax is simple:
+    - shred <FILE>
+    - On its own, shred will delete the file and overwrite it several times—by default, shred overwrites four times. Generally, the more times the file is overwritten, the harder it is to recover, but keep in mind that each overwrite takes time, so for very large files, shredding may become time-consuming.
+        - "-f" option, which changes the permissions on the files to allow overwriting if a permission change is necessary
+        - "-n" option, which lets you choose how many times to overwrite the files.
+    - ### Disabling Logging
+    - Another option for covering your tracks is to simply disable logging. When a hacker takes control of a system, they could immediately disable logging to prevent the system from keeping track of their activities. This, of course, requires root privileges.
+    - To disable all logging, the hacker could simply stop the rsyslog daemon. Stopping any service in Linux uses the same syntax:
+    - service servicename start|stop|restart
+    - So, to stop the logging daemon, you could simply enter the following command:
+    - -> service rsyslog stop
+    - Now Linux will stop generating any log files until the service is restarted, enabling you to operate without leaving behind any evidence in the log files!
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/22bdafc9-1b58-44d9-b0c4-02d1f5881ff0/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/22bdafc9-1b58-44d9-b0c4-02d1f5881ff0/Untitled.png)
+- **Chapter 12: Using and Abusing Services**
+    - A service is an application that runs in the background waiting for you to use it.
+    - ## Starting, Stopping, and Restarting Services
+    - Some services can be stopped and started via the GUI of Kali Linux, much as you would on an operating system like Windows or Mac.
+    - service servicename start|stop|restart
+    - To start the apache2 service (web server or HTTP service), you would enter the following:
+    - -> service apache2 start
+    - To stop the Apache web server, enter:
+    - -> service apache2 stop
+    - Usually, when you make a configuration change to an application or service by altering its plaintext configuration file, you need to restart the service to capture the new configuration.
+    - -> service apache2 restart
+    - ## Creating an HTTP Web Server with the Apache Web Server
+    - The Apache Web Server is probably the most commonly used service on Linux systems.
+    - ### Starting with Apache
+    - The Apache Web Server is often associated with the MySQL database and these two services are very often paired with a scripting language such as Perl or PHP to develop web applications.
+    - The first step, of course, is to start out Apache daemon:
+    - -> service apache2 start
+    - Now that Apache is running, it should be able to serve up its default web page. Enter "http://localhost/" in your favorite web browser to bring up the web page.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dc6847a4-b8b1-44f3-9f5f-440ef7748d3f/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dc6847a4-b8b1-44f3-9f5f-440ef7748d3f/Untitled.png)
+    - ### Editing the index.html file
+    - Apache's default web page is at /var/www/html/index.html. You can edit the index.html file to serve up whatever information you want.
+    - ## OpenSSH
+        - SSH is an acronym for Secure Shell and is basically what enables us to connect securely to a terminal on a remote system — a replacement for the insecure telnet that was so common years ago.
+        - When we're building a web server, SSH enables us to create an access list(a list of users who can use this service), authenticate users with encrypted passwords, and encrypt all communication. This reduces the chance of unwanted users using the remote terminal.
+        - Probably the most widely used Linux SSH service is OpenSSH.
+    - -> service ssh start
+    - ## Extracting Information from MySQL
+    - -> service mysql start
+    - Next, you need to authenticate yourself by logging in. Enter the following and, when prompted for a password, just press ENTER:
+    - -> mysql -u root -p
+Enter password:
+Welcome to MySQL monitor
+...
+    - ### Interacting with MySQL
+    - SQL is an interpreted programming language for interfacing with a database. The database is often a relational database, meaning data is stored in multiple tables that interact and each table has values in one or more columns and rows.
+    - There are several implementations of SQL, each, with its own commands and syntax, but here are a few common commands:
+        - select - Used to retrieve data
+        - union - Used to combine the results of two or more select operations
+        - insert - Used to add new data
+        - update - Used to modify existing data
+        - delete - Used to delete data
+    - ### Setting a MySQL Password
+    - Let's see what users are already in our MySQL system by entering:
+    - -> select user, host, password from mysql.user;
+    - If the root users have no password set. Let's assign a password to root.
+    - Use the "show databases",  command to see all the available databases:
+    - -> show databases;
+-> use mysql;
+-> update user set password = PASSWORD("mypassword") where user = 'root';
+    - This command will update the user by setting the user's root password to "mypassword".
+    - ### Accessing a Remote Database
+    - To access a MySQL database on the localhost, we use the following syntax:
+    - -> mysql -u <username> -p
+    - This command defaults to using the MySQL instance on the [localhost](http://localhost) if it isn't given a hostname or IP address. To access a remote database, then, we need to provide the hostname or IP address of the system that is hosting the MySQL database:
+    - -> mysql -u root -p <IP address>
+    - This will connect us to the MySQL instance at <IP address> and prompt us for a password.
+    - ### Connecting to a Database
+    - Here is the command to find which databases are on the accessed system:
+    - > show database;
+    - Then we can use a particular database, let's say database name as creditcardnumbers:
+    - > use creditcardnumbers;
+    - ### Database Tables
+    - We can find out what tables are in this (creditcardnumbers) database by entering the following command:
+    - > show tables;
+    - You can see the structure of the table (cardnumbers) using the describe statement, like so:
+    - > describe cardnumbers;
+    - ### PostgreSQL with Metasploit
+    - PostgreSQL, or just Postgres, is another open source relational database often used in very large, internet-facing applications ude to its ability to scale easily and handle heavy workloads.
+    - -> apt-get postgres install
+    - As with nearly all services in Linux, we can start PostgresSQL by entering service application start:
+    - -> service postgresql start
+    - With PostgreSQL up and running, let's start Metasploit:
+    - -> msfconsole
+    - Note that when Metasploit has completed starting up, you will see an msf > prompt
+    - With Metasploit running, we can set up PostgreSQL with the following command so that it stores data from any Metasploit activity on your system:
+    - msf> msfdb init
+    - Next, we need to log in to Postgres as root. Here, we precede the command with su, the "switch user" command, to obtain root privileges:
+    - msf> su postgres
+...
+postgres@kali:/root$
+    - When you log in to Postgres, you will see that the prompt has changed to postgres@kali:/root$, representing the application, the hostname, and the user.
+    - In the next step, we need to create a user and password:
+    - postgres@kali:/root$ createuser msf_user -p
+    - We create the username msf_user using the -p option with the createuser command. Then enter your desired password twice. Next, you need to create the database and grant permissions for msf_user. Name the database my_db:
+    - postgres@kali:/root$ createdb --owner=msf_user my_db
+postgres@kali:/root$ exit
+    - Next, we have to connect our Metasploit console, msfconsole, to out PostgreSQL database by defining the following:
+        - The user
+        - The password
+        - The host
+        - The database name
+    - In our case, we can connect msfconsole to our database with the following command:
+    - msf> db_connect msf_user:password@127.0.0.1/my_db
+    - Lastly, we can check the status of the PostgreSQL database to make sure it's connected:
+    - msf> db_status
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5be5bcf6-39d1-4f6b-8eb9-a895acd4c263/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5be5bcf6-39d1-4f6b-8eb9-a895acd4c263/Untitled.png)
+- **Chapter 13: Becoming Secure and anonymous**
+    - In this chapter, we look at how you can navigate the World Wide Web anonymously (or as close as you can get) using four methods:
+        - The Onion Network
+        - Proxy servers
+        - Virtual Private Networks
+        - Private encrypted emails
+    - No one method is sure to keep your activities safe from prying eyes, and given enough time and resources, anything can be tracked. However, these methods will likely make the tracker's job much more difficult.
+    - ## How The Internet Gives Us Away
+    - Let's start by taking a look at how IP addresses give us away on the internet:
+    - When you send a packet of data across the internet, it contains the IP addresses of the source and destination for the data. In this way, the packet knows where it is going and where to return the response. Each packet hops through multiple internet routers until it finds its destination and then hops back to the sender. For general internet surfing each hop is a router the packet passes through to get to its destination. There can be as many as 20—30 hops between the sender and the destination, but usually any packet will find its way to the destination in fewer than 15 hops.
+    - As the packet traverses the internet, anyone intercepting the packet can see who sent it, where it has been, and where it's going. This is one way websites can tell who you are when arrive and log you in automatically, and it's also how someone can track where you've been on the internet.
+    - To see what hops a packet might make between you and the destination, you can use the "traceroute" command. The command will send out packets to the destination and trace the route of those packets.
+    - kal> traceroute google.com
+    - ## The Onion Router System
+    - In the 1990s, the US Office of Naval Research (ONR) set out to develop a method for anonymously navigating the internet for espionage purposes. The plan was to set up a network of routers that was separate from the internet's routers, that could encrypt the traffic, and that only stored the unencrypted IP address of the previous router—meaning all other router addresses along the way were encrypted. The idea was that anyone watching the traffic could not determine the origin or destination of the data. This research became known as "The Onion Router (Tor) Project" in 2002, and it's now available to anyone to use for relatively safe and anonymous navigation on the web.
+    - ### How Tor Works
+    - Packets sent over Tor are not sent over the regular routers so closely monitored by so many but rather are sent over a network of over 7,000 routers around the world, thanks to volunteers who allow their computers to be used by Tor. On top of using a totally separate router network, Tor encrypts the data, destination, and sender IP address of each packet. At each hop, the information is encrypted and then decrypted by the next hop when it's received. In this way, each packet contains information about only the previous hop along the path and not the IP address of the origin. If someone intercepts the traffic, they can see only the IP address of the previous hop, and the website owner can see only the IP address of the last router that sent the traffic. This ensure relative anonymity across the internet.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b4efc2bd-0407-4c46-98d1-2d326614c4e8/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b4efc2bd-0407-4c46-98d1-2d326614c4e8/Untitled.png)
+    - To enable the use of Tor, just install Tor browser from https://www.torproject.org/. By using this browser, you'll be navigating the internet through a separate set of routers and will be able to visit sites without being tracked by Big Brother. Unfortunately, the tradeoff is that surfing via the Tor browser can be a lot slower; because there are not nearly as many routers, the bandwidth is limited in this network.
+    - In addition to being capable of accessing nearly any website on the traditional internet, the Tor browser is capable of accessing the dark web. The websites that make up the dark web require anonymity, so they allow access only through the Tor browser, and they have addresses ending in ".onion" for their top-level domain (TLD). The dark web is infamous for illegal activity, but a number of legitimate services are also available there. A word of caution, however: when accessing the dark web, you may come across material that many will find offensive.
+    - ### Security Concerns
+    - The intelligence and spy services of the United States and other nations consider the Tor network a threat to national security, believing such an anonymous network enables foreign governments and terrorists to communicate without being watched. As a result, a number of robust, ambitious research projects are working to break the anonymity of Tor.
+    - Tor's anonymity has been broken before by these authorities and will likely be broken again. The NSA, as one instance, runs its own Tor routers, meaning that your traffic may be traversing the NSA's routers when you use Tor. If your traffic is exiting the NSA's routers, that's even worse, because the exit router always knowns your destination. The NSA also has a method known as traffic correlation, which involves looking for patterns in incoming and outgoing traffic, that has been able to break Tor's anonymity. Though these attempts to break Tor won't affect Tor's effectiveness at obscuring your identity from commercial services, such as Google, they may limit the browser's effectiveness in keeping you anonymous from spy agencies.
+    - ## Proxy Servers
+    - Another strategy for achieving anonymity on the internet is to use proxies, which are intermediate systems that act as middleman for traffic: the user connects to a proxy, and the traffic is given the IP address of the proxy before it's passed on. When the traffic returns from the destination, the proxy sends the traffic back to the source. In this way, traffic appears to come from the proxy and not the originating IP address.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d3e55306-2da7-49d4-b5b9-2396f5fd1fbe/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d3e55306-2da7-49d4-b5b9-2396f5fd1fbe/Untitled.png)
+    - Of course, the proxy will likely log your traffic, but an investigator would have to get a subpoena or search warrant to obtain the logs. To make your traffic even harder to trace, you can use more than one proxy, in a strategy known as a proxy chain.
+    - Kali Linux has an excellent proxying tool called proxychains that you can set up to obscure your traffic. The syntax for the proxychains:
+    - kali> proxychains <the command you want proxies> <arguments>
+    - The arguments you provide might include an IP address. For example, if you wanted ot use proxychains to scan a site with nmap anonymously, you would enter the following:
+    - kali> proxychains nmap -sT -Pn <IP address>
+    - ### Setting Proxies in the Config File
+    - As with nearly every application in Linux/Unix, configuration of proxychains is managed by the config file—specially /etc/proxychains.conf. Open the config file in your text editor of choice.
+    - Scroll down the fie to line 61, and you should see the ProxyList section.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8c24500c-7609-4b3d-80d1-6cb56eef3429/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8c24500c-7609-4b3d-80d1-6cb56eef3429/Untitled.png)
+    - We can add proxies by entering the IP addresses and ports of the proxies we want to use in this list. For now, we'll use some free proxies. You can find free proxies by googling "free proxies" or using the site "http://wwwhidemy.name". Note, however, that using free proxies in real-life hacking activity is not a good idea.
+    - After getting proxies from above site; then add one of the resulting proxies to your proxychains.conf file using the following format:
+    - Type IPaddress Port
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/975d9669-8df3-4b6b-8629-7d93d562f4a9/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/975d9669-8df3-4b6b-8629-7d93d562f4a9/Untitled.png)
+    - It's important to note that proxychains defaults to using Tor if you don't enter any proxies of your own. The last time from above figure directs proxychains to send traffic first through the host at 127.0.0.1 on port 9050 (the default Tor configuration). If you're not adding your own proxies and want to use Tor, leave this as it is. If you are not using Tor, you'll need to comment out this line (add a # before it).
+    - As much as I like Tor, as mentioned, it is usually very slow. Also, because the NSA has broken Tor, I am much less likely to depend on it for anonymity. I therefore comment out this line and add my own set of proxies.
+    - Let's test it out. In this example, I am going to open the browser Firefox and have it navigate to [](https://google.com/)https://google.com/ anonymously by sending the traffic through a proxy
+    - kali> proxychains firefox google.com
+    - This successfully open [google.com](http://google.com) in firefox through my chosen proxy and returns the results to me. To anyone tracing this traffic, it appears that it was my proxy that navigated to [google.com](http://google.com), rather than my IP address.
+    - ## Some More Interesting Options
+    - As we now have it set up, we are simply using a single proxy. However, we can put in multiple proxies and use all of them, we can use a limited number from the list, or we can have proxychains change the order randomly.
+    - ### Adding More Proxies
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/97117855-011b-4b21-9897-2ac3fb4eaa6c/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/97117855-011b-4b21-9897-2ac3fb4eaa6c/Untitled.png)
+    - kali> proxychains firefox google.com
+    - You won't notice any difference, but your packet is now traveling through several proxies.
+    - ### Dynamic Chaining
+    - With multiple IPs in our proxychain.conf file, we can set up dynamic chaining, which runs our traffic through every proxy on our list and, if one of the proxies is down or not responding, automatically goes to the next proxy in the list without throwing an error. If we didn't set this up, a single failing proxy would break out request.
+    - Go back into your proxychains configuration file, find the dynamic_chain line (line10), and uncomment it. Also make sure you comment out the strict_chain line if it isn't already.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/15f7a67b-d017-4efa-916c-b7b136fa84d7/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/15f7a67b-d017-4efa-916c-b7b136fa84d7/Untitled.png)
+    - This will enable dynamic chaining of our proxies, thus allowing for greater anonymity and trouble-free hacking. Save the config file and feel free to try it out.
+    - ### Random Chaining
+    - Our final proxy trick is the random chaining option, where proxychains will randomly choose a set of IP addresses from our list and use them to create our proxy chain. This means that each time we use proxychains, the proxy will look different to the target, making it harder to track our traffic from its source. This option is also considered "dynamic" because if one of the proxies is down, it will skip to the next one.
+    - Go back inside the /etc/proxychains.conf file and comment out the lines dynamic_chain and strict_chain by adding a # at the start of each line; then uncomment the random_chain line. We can only use one of these three options at a time, so make certain you comment out the other options before using proxychains.
+    - Next, find and uncomment the line with the chain_len and then give it a reasonable number. This line determines how many of the IP addresses in your chain will be used in creating your random proxy chain.
+    - ### Security Concerns
+    - As a last note on proxy security, be sure to choose your proxies wisely: proxychains is only as good as the proxies you use. If you are intent on remaining anonymous, do not use a free proxy. Hackers use paid-for proxies that can be trusted. In fact, the free proxies are likely selling your IP address and browsing history. As Bruce Schneier, the famous cryptographer and security expert, once said "If something is free, you're not the customer, you're the product". In other words, any free product is likely gathering your data and selling it. Why else would they offer a proxy for free?
+    - Although the IP address of your traffic leaving the proxy will be anonymous, there are other ways for surveillance agencies to identify you. For instance, the owner of the proxy will know your identity and, if pressured enough by espionage or law enforcement agencies with jurisdiciton, may offer up your identity to protect their business. It's important to be aware of the limitations of proxies as a source of anonymity.
+    - ## Virtual Private Networks
+    - A VPN is used to connect to an intermediary internet device such as a router that sends your traffic to its ultimate destination tagged with the IP address of the router.
+    - Using a VPN can certainly enhance your security and privacy, but it's not a guarantee of anonymity. The intent device you connect to must record or log your IP address to be able to properly send the data back to you, so anyone able to access these records can uncover information about you.
+    - The beauty of VPNs is that they are simple and easy to work with. You can open an account with a VPN provider and then seamlessly connect to the VPN each time you log on to your computer. You would use your browser as usual to navigate the web, but it will appear to anyone watching that your traffic is coming from the IP address and location of the internet VPN device and not your own. In addition, all traffic between you and the VPN device is encrypted, so even your internet service provider can't see your traffic.
+    - Among other things, a VPN can be effective in evading government-controlled content and information censors. For instance, if your national government limits your access to websites with a particular politica message, you can likely use a VPN based outside your country in order to access that content. Some media corporations, such as Netflix, Hulu, and HBO, limit access to their content to IP addresses originating from their own nation. Using a VPN based in a nation that those services allow can often get you around those access limitations.
+    - The strength of a VPN is that all your traffic is encrypted when it leaves your computer, thus protecting you against snooping, and your IP address is cloacked by the VPN IP address when you visit a site. As with a procy server, the owner of the VPN has your originating IP address (otherwise they couldn't send your traffic back to you). If they are pressured by espionage agencies or law enforcement, they might give up you identity. One way to prevent that is to use only VPNs that promise not to store or log any of this information (and hope they are being truthful). In this way, if someone insists that the VPN service provider turn over its data on its users, there is no data.
+    - ## Encrypted Email
+    - Free commercial email services such as Gmail, Yahoo!, and Outlook Web Mail (formerlly Hotmail) are free for a reason: they are vehicles for tracking your interests and serving up advertisements. As mentioned already, if a service is free, you are the product, not the customer. In addition, the servers of the email provider (Google, for example) have access to the unencrypted contents of your email, even if you're using HTTPS.
+    - One way to prevent eavesdropping on your email is to use encrypted email. ProtonMail, encrypts your email from end to end or browser to browser. This means that your email is encrypted on ProtonMail servers—even the ProtonMail administrators can't read your email.
+    - ProtonMail was founded by a group of young scientists at the CERN supercollider facility in Switzerland. The Swiss have a long and storied history of protecting secrets (remember those Swiss bank accounts you've heard so much about?), and ProtonMail's servers are based in the European Union, which has much stricter laws regarding the sharing of personal data than does the United States. ProtonMail does not charge for a basic account but offers premium accounts for a nominal fee. It is important to note that when exchanging email with non-ProtonMail users, there is the potential for some or all of the email not to be encrypted. See the ProtonMail support knowledge base for full details.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6ad50482-4181-41a8-9058-ca79e0897e05/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6ad50482-4181-41a8-9058-ca79e0897e05/Untitled.png)
+- **Chapter 14: Understanding and Inspecting Wireless Networks**
+    - ## Wi-Fi Networks
+    - Some basic Wi-Fi terms and technologies to help you better understand the output from a lot of the queries:
+        - AP (Access Point): This is the device wireless users connect to for internet access.
+        - ESSID (Extended Service Set Identifier): This is the same as the SSID, but it can be used for multiple APs in a wireless LAN.
+        - BSSID (Basic Service Set Identifier): This is the unique identifier of each AP, and it is the same as the MAC address of the device:
+        - SSID (Service Set Identifier): This is the name of the network.
+        - Channels: Wi-Fi can operate on any one of 14 channels (1-14). In the United States, Wi-Fi is limited to channels 1-11.
+        - Power: The close you are to the Wi-Fi AP, the greater the power, and the easier the connection is to crack.
+        - Security: This is the security protocol used on the WiFi-AP that is being read from. There are three primary security protocols for Wi-Fi. The original, Wired Equivalent Privacy (WEP), was badly flawed and easily cracked. Its replacement, Wi-Fi Protected Access (WPA), was a bit more secure. Finally, WPA2-PSK, which is much more secure and uses a preshared key (PSK) that all users share, is now used by nearly all Wi-Fi APs (except enterprise Wi-Fi).
+        - Modes: Wi-Fi can operate in one of the three modes: managed, master, or monitor.
+        - Wireless range: In United States, a Wi-Fi AP must legally broadcast its signal at an upper limit of 0.5 watts. At this power, it has a normal range of about 300 feet(100 meters). High-gain antennas can extend this range to as much as 20 miles.
+        - Frequency: Wi-Fi is designed to operate on 2.4GHz and 5GHz. Modern Wi-Fi APs and wireless network cards often use both.
+    - ### Basic Wireless Commands
+    - "ifconfig", which lists each activated network interface on your system along with some basic statistics, including (most importantly) the IP address of each interface.
+    - The Wi-Fi interface is shown as wlan0. In Kali Linux, Wi-Fi interfaces are usually designated as wlanX, with X representing the number of that interface. In other words, the first Wi-Fi adapter on your system would be labeled wlan0, the second wlan1, and so on.
+    - If you just want to see your Wi-Fi interfaces and their statistics, Linux has a specific command that's similar to ifconfig but dedicated to wireless. That command is iwconfig. When you enter it, only your wireless interfaces and their key data are displayed:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fdea3f86-9512-43b0-9da3-603aed880282/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fdea3f86-9512-43b0-9da3-603aed880282/Untitled.png)
+    - The mode has three settings: managed, which means it is ready to join or has joined an AP; master, which means it is ready to act as or already is an AP; and monitor, which we'll discuss a little later in the chapter.
+    - If you are not certain which Wi-Fi AP you want to connect to, you can see all the wireless access points your network card can reach using the iwlist command. The syntax for iwlist is as follows:
+    - iwlist <interface> <action>
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2261a1ed-53f0-4f2d-82c7-d3b616b58722/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2261a1ed-53f0-4f2d-82c7-d3b616b58722/Untitled.png)
+    - The output from this command should include all Wi-Fi APs within range of your wireless interface, along with key data about each AP, such as the MAC address of the AP, the channel and frequency it is operating on, its quality, its signal level, whether its encryption key is enabled, and its ESSID.
+    - You will need the MAC  address of the target AP (BSSID), the MAC  address of a client (another wireless network card), and the channel the AP is operating on in order to perform any kind of hacking, so this is valuable information.
+    - Another command that is very useful in managing your Wi-Fi connections is nmcli (or the network manager command line interface). The Linux daemon that provides a high-level interface for the network interfaces (including the wireless ones) is known as the network manager. Generally, Linux users are familiar with this daemon from its graphical user interface (GUI), but it can also be used from the command line.
+    - The nmcli command can be used to view the Wi-Fi APs near you and their key data, as we did with iwlist, but this command gives us a little more information. We use it in the format nmcli dev networktype, where dev is short for devices and the type (in this case) is wifi:
+    - kali> nmcli dev wifi
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8711ea2b-87c0-4a31-8b0f-f5f25cadf01b/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8711ea2b-87c0-4a31-8b0f-f5f25cadf01b/Untitled.png)
+    - In addition to displaying the Wi-Fi APs within range and key data about them, including the SSID, the mode, the channel, the rate of transfer, the signal strength, and the security protocols enabled on the devices, nmcli can be used connect to APs. The syntax to connet to an AP is as follows:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f5015f24-beae-40c7-b3fb-347cb3d835ec/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f5015f24-beae-40c7-b3fb-347cb3d835ec/Untitled.png)
+    - So, based on the results from our first command, we know there is an AP with an SSID of Hackers-Arise. We also know it has WPA1 WPA2 security (this means that the AP is capable of using both the older WPA1 and the newer WPA2), which means we will have to provide the password to connect to the network. Fortunately, as it's our AP, we know the password is 12345678, so we can enter the following:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1882da53-edc2-47e1-af35-b96396cf5292/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1882da53-edc2-47e1-af35-b96396cf5292/Untitled.png)
+    - Try this on a network you know, and then when you have successfully connected to that wireless AP, run iwconfig again to see what has changed. Here's my output from connecting to Hackers-Arise:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0a151bbe-dce4-4a07-9dba-c32dea7930de/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0a151bbe-dce4-4a07-9dba-c32dea7930de/Untitled.png)
+    - ### Wi-Fi Recon with aircrack-ng
+    - One of the most popular exploits for new hackers to try is cracking Wi-Fi access points. As mentioned, before you can even consider attacking a Wi-Fi AP, you need the MAC address of the target AP (BSSID), the MAC address of a client, and the channel the AP is operating on.
+    - To use these tools effectively, you first need to put your wireless network card into monitor mode so that the card can see all the traffic passing its way. Normally, a network card captures only traffic destined specifically for that card. Monitor mode is similar ot promiscuous mode on wired network cards.
+    - To put your wireless network card in monitor mode, use the airmon-ng command from the aircrack-ng suite. The syntax for this command is simple:
+    - airmon-ng start|stop|restart interface
+    - So, if you want to put your wireless network card (designated wlan0) into monitor mode, you would enter the following:
+    - kali> airmon-ng start wlan0
+    - Found three processes that could cause trouble
+    - If airodump-ng, aireplay-ng, or airtun-ng stops working after a short period of time, you may want to run 'airmon-ng check kill'
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7920f42d-a0bd-4a61-857c-54d76b374605/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7920f42d-a0bd-4a61-857c-54d76b374605/Untitled.png)
+    - The stop and restart commands, respectively, stop monitor mode and restart monitor mode if you run into trouble.
+    - With your wireless card in monitor mode, you can access all the wireless traffic passing by you within the range of your wireless network adapater and antenna (standard is about 300-500 feet). Note that airmon-ng will rename your wireless interface: mine has been renamed "wlan0mon", though yours may be different. Make certain to note the new designated name of your wireless because you'll need that information in the next step.
+    - Now we'll use another tool from the aircrack-ng suite to find key data from the wireless traffic. The airodump-ng command captures and displays the key data from broadcasting APs and any clients connected to those APs or within the vicinity. The syntax here is straightforward: simply plug in airdump-ng, followed by the interface name you got from running airmon-ng just now. When you issue this command, your wireless card will pick up crucial information (listed next) from all the wireless traffic of the APs nearby:
+        - BSSID: The MAC address of the AP or client
+        - PWR: The strength of the signal
+        - ENC: The encryption used to secure the transmission
+        - #Data: The data throughput rate
+        - CH: The channel the AP is operating on
+        - ESSID: The name of the AP
+    - kali> airodump-ng wlan0mon
+    - Note that airodump-ng splits the output screen into an upper and lower portion. The upper portion has information on the broadcasting APs, including the BSSID, the power of the AP, how many beacon frames have been detected, the data throughput rate, how many packets have traversed the wireless card, the channel (1-14), the theoretical throughput limit, the encryption protocol, the cipher used for encryption, the authentication type, and the ESSID (commonly referred to as SSID). In the client portion, the output tells us that one client is not associated, meaning it has been detected but it is not connected to any AP, and that another is associated with a station, meaning it's connected to the AP at that address.
+    - So to crack the Wi-Fi password, you would open three terminals. In the first terminal, you would enter commands similar to the following, filling in the client and AP MAC addresses and the channel:
+    - airodump-ng -c 10 --bssid 01:01:AA:BB:CC:22 ­w Hackers­ArisePSK wlan0mon
+    - This command captures all the packets traversing the AP on channel 10 using the -c option.
+    - In another terminal, you can use the airplay-ng command to knock off (deauthenticate) anyone connected to the AP and force them to reauthenticate to the AP, as shown next. When they reauthenticate, you can capture the hash of their password that is exchanged in the WPA2-PSK four-way handshake. The password hash will appear in the upper-right corner of the airodump-ng terminal:
+    - aireplay-­ng ­­--deauth 100 -­a 01:01:AA:BB:CC:22-­c A0:A3:E2:44:7C:E5 wlan0mon
+    - Finally, in the final terminal, you can use a password list (wordlist.dic) to find the password in the captured hash (hackers-ArisePSK.cap):
+    - aircrack-ng -w wordlist.dic -b 01:01:AA:BB:CC:22 Hacker-ArisePSK.cap
+    - ## Detecting and Connecting to Bluetooth
+    - ### How Bluetooth Works
+    - Bluetooth is a universal protocol for low-power, near-field communication operating at 2.4—2.485GHz using spread spectrum, frequency hopping at 1,600 hops per second (this frequency hopping is a security measure). It was developed in 1994 by Ericsson Corp. of Sweden and named after the 10th-century Danish king Harald Bluetooth.
+    - The Bluetooth specification has a minimum range of 10 meters, but there is no limit to the upper range manufacturers may implement in their devices. Many devices have ranges as large as 100 meters. With special antennas, that range can be extended even farther.
+    - Connecting two Bluetooth devices is referred to as pairing. Pretty much any two Bluetooth devices can connect to each other, but they can pair only if they are in discoverable mode. A Bluetooth device in discoverable mode transmits the following information:
+        - Name
+        - Class
+        - List of Services
+        - Technical information
+    - When the two devices pair, they exchange a secret or link key. Each stores this link key so it can identify the other in future pairings.
+    - Every device has a unique 48-bit identifier (a MAC-like address) and usually a manufacturer-assigned name. These will be useful pieces of data when we want to identify and access a device.
+    - ### Bluetooth Scanning and Reconnaissance
+    - Linux has an implementation of the Bluetooth protocol stack called BlueZ that we'll use to scan for Bluetooth signals. Most Linux distributions, including kali Linux, have it installed by default. If yours doesn't, you can usually find it in your repository using the following command:
+    - kali> apt-get install bluez
+    - BlueZ has a number of simple tools we can use to manage and scan Bluetooth devices, including the following:
+        - hciconfig - This tool operates very similarly to ifconfig in Linux, but for Bluetooth devices.
+        - hcitool - This inquiry tool can provide us with device name, device ID, device class, and device clock information, which enables the devices to work synchronously.
+        - hcidump - This tool enables us to sniff the Bluetooth communications, meaning we can capture data sent over the Bluetooth signal.
+    - The first scanning and reconnaissance step with Bluetooth is to check whether the Bluetooth adapter on the system we're using is recognized and enabled so we can use it to scan for other devices. We can do this with the built-in BlueZ tool hciconfig.
+    - kali> hciconfig
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8cdda5f0-c7a7-4a73-8f2f-bb9e06e5aa58/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8cdda5f0-c7a7-4a73-8f2f-bb9e06e5aa58/Untitled.png)
+    - As you can see, my Bluetooth adapter is recognized with a MAC address of 10:AE:60:58:F1:37. This adapter has been named hcio. The next step is to check that the connection is enabled, which we can also do with hciconfig by providing the name and the UP command:
+    - kali> hciconfig hci0 up
+    - If the command runs successfully, we should see no output, just a new prompt.
+    - Good, hcio is up and ready! Let's put it to work.
+    - ### Scanning for Bluetooth Devices with hcitool
+    - Now that we know our adapter is up, we can use another tool in the BlueZ suite called hcitool, which is used to scan for other Bluetooth devices within range.
+    - Let's first use the scanning function of this tool to look for Bluetooth devices that are sending out their discover beacons, meaning they're in discover mode, with the simple scan command :
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a01d0466-8e14-4115-bd04-85c144849f94/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a01d0466-8e14-4115-bd04-85c144849f94/Untitled.png)
+    - As you can see, on my system, hcitool found two devices. Yours will likely provide you with different output depending on what devices you have around. For testing purposes, try putting your phone or other Bluetooth device in discovery mode and see if it gets picked up in the scan.
+    - Now let's gather more information about the detected devices with the inquiry function inq:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0a10c382-a717-4476-bd3e-c25811764914/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0a10c382-a717-4476-bd3e-c25811764914/Untitled.png)
+    - This gives us the MAC addresses of the devices, the clock offset, and the class of the devices. The class indicates what type of Bluetooth device you found, and you can look up the code and see what type of device it is by going to the Bluetooth SIG site at [](https://www.bluetooth.org/en%C2%ADus/specification/assigned%C2%ADnumbers/servicediscovery/)[https://www.bluetooth.org/en­us/specification/assigned­numbers/servicediscovery/](https://www.bluetooth.org/en%C2%ADus/specification/assigned%C2%ADnumbers/servicediscovery/).
+    - The tool hcitool is a powerful command line interface to the Bluetooth stack that can do many, many things.
+    - Many Bluetooth-hacking tools you'll see around simply use these commands in a script, and you can easily craete your own tool by using these commands in your own bash or Python script.
+    - ### Scanning for Services with sdptool
+    - Service Discovery Protocol (SDP) is a Bluetooth protocol for searching for Bluetooth services (Bluetooth is suite of services), and, helpfully, BlueZ provides the sdptool tool for browsing a device for the services it provides. It is also important to note that the device not have to be in the discovery mode to be scanned. The syntax is as follows:
+    - sdptool browser <MACaddress>
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c784cc57-a007-4ca3-b4c6-3de883441976/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c784cc57-a007-4ca3-b4c6-3de883441976/Untitled.png)
+    - Here, we can see that the sdptool tool was able to pull information on all the services this device is capable of suing. In particular, we see that this device supports the ATT Protocol, which is the Low Energy Attribute Protocol. This can provide us more clues as to what the device is and possibly potential avenues to interact with it further.
+    - ### Seeing Whether the Devices Are Reachable with l2ping
+    - Once we've gatherd the MAC addresses of all nearby devices, we can send out pings to these devices, whether they're in discovery mode or not, to see whether they are in reach. This lets us know whether they are active and within range. To send out a ping, we use the l2ping command with the following syntax:
+    - l2ping <MACaddress>
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2f58c8c8-c483-49fc-8cc2-62c92c7fe312/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2f58c8c8-c483-49fc-8cc2-62c92c7fe312/Untitled.png)
+    - This output indicates that the device with the MAC address 76:6E:46:63:72:66 is within range and reachable. This is useful knowledge, because we must know whether a device is reachable before we even contemplate hacking it.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ca3c19ae-dad0-4933-a49e-f9cf73dbb8f6/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ca3c19ae-dad0-4933-a49e-f9cf73dbb8f6/Untitled.png)
+- **Chapter 15: Managing the Linux Kernel and Loadable Kernel Modules**
+    - All operating systems are made up of at least two major components:
+        - The first and most important of these is the kernel. The kernel is at the center of the operating system and controls everything the operating system does, including managing memory, controlling the CPU, and even controlling what the user sees on the screen.
+        - The second element of the operating system is often referred to as user land and includes nearly everything else.
+    - The kernel is designed to be protected or privileged area that can only be accessed by root or other privileged accounts. Most operating systems provide users and services access only to user land, where the user can access nearly anything they need without taking control of the operating system.
+    - Access to the kernel allows the user to change how the operating systems works, looks, and feels. It also allows them to crash the operating system, making it unworkable.
+    - ## What is a Kernel Module?
+    - The kernel is the central nervous system of your operating system, controlling everything it does, including managing interactions between hardware components and starting the necessary services. The kernel operating between the user application you see and the hardware that runs everything, like CPU, memory, and hard drive.
+    - Linux is a monolithic kernel that enables the addition of kernel modules. As such, modules can be added and removed from the kernel.
+    - The kernel will occasionally need updating, which might entail installing new device drivers (such as video cards, Bluetooth devices, or USB devices), filesystem drivers, and even system extensions. These drivers must be embedded in the kernel to be fully functional. In some systems, to add a driver, you have to rebuild, compile, and reboot the entire kernel, but Linux has the capability of adding some modules to the kernel without going through that entire process. These modules are referred to as loadable kernel modules, or LKMs.
+    - LKMs have access to the lowest levels of the kernel by necessity, making them an incredibly vulnerable target for hackers. A particular type of malware known as a rootkit embeds itself into the kernel of the operating systems, often through these LKMs. If malware embeds itself in the kernel, the hacker can take complete control of the operating system.
+    - If a hacker can get the Linux admin to load a new module to the kernel, the hacker not only can gain control over the target system but, because they're operating at the kernel level of the operating system, can control what the target system is reporting in terms of processes, ports, services, hard drive space, and almost anything else you can think of.
+    - ## Checking the Kernel Version
+    - The first step to understanding the kernel is to check what kernel your system is running. There are at least two ways to do this. First:
+    - kali> uname -a
+Linux Kali 4.6.0-­kalil-­amd64 #1 SMP Debian 4.6.4­lkalil (2016-­07­21) x86_64
+    - The kernel responds by telling us the distribution our OS is running is Linux Kali, the kernel build is 4.6.4, and the architecture it's built for is the x86_64 architecture. It also tells us it has symmetric multiprocessing (SMP) capabilities (meaning it can run on machines with multiple cores or processers) and was built on Debian 4.6.4 on July 21, 2016.
+    - This information can be required when you install or load a kernel driver, so it's useful to understand how to get it.
+    - One other way to get this information, as well as some other useful information, is to use the "cat" command on "/proc/version" file:
+    - kali> cat /proc/version
+Linux version 4.6.0­-kalil­amd64 (devel@kali.org) (gcc version 5.4.0 20160909 (Debian 5.4.0­6)   ) #1 SMP Debian 4.6.4­lkalil  (2016­07­21)
+    - ## Kernel Tuning with Sysctl
+    - With the right commands, you can tune your kernel, meaning you can change memory allocations, enable networking features, and even harden the kernel against outside attacks.
+    - Modern Linux kernels use the sysctl command to tune kernel options. All changes you make with sysctl remain in effect only until you reboot the system. To make any changes permanent, you have to edit the configuration file for sysctl directly at /etc/sysctl.conf
+    - A word of warning: you need to be careful when using sysctl because without the proper knowledge and experience, you can easily make your system unbootable and unusable. Make sure you've considered what you're doing carefully before making any permanent changes.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/110f4819-e2bc-497f-959e-86f59b8a0ac0/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/110f4819-e2bc-497f-959e-86f59b8a0ac0/Untitled.png)
+    - In the man-in-the-middle (MITM) attack, the hacker places themselves between communicating hosts to intercept information. The traffic passes through the hacker's system, so they can view and possibly alter the communication. One way to achieve this routing is to enable packet forwarding.
+    - If you scroll down a few page in the output or filter for "ipv4" (sysctl -a | less | grep ipv4):
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4a9f920a-35cc-4150-8627-ba0760aa218d/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4a9f920a-35cc-4150-8627-ba0760aa218d/Untitled.png)
+    - The line net.ipv4.ip_forward=0 is the kernel parameter that enables the kernel to forward on the packets it receives. In other words, the packets it receives, it sends back out. The default setting is 0, which means that packet forwarding is disabled.
+    - To enable IP forwarding, change the 0 to a 1 by entering the following:
+    - kali> sysctl -w net.ipv4.ip_forward=1
+    - From an operating system—hardening perspective, you could use this file to disable ICMP echo request by adding the line net.ipv4.icmp_echo_ignore_all=1 to make it more difficult—but not impossible—for hackers to find your system. After adding the line, you will need to run the command sysctl -p.
+    - ## Managing Kernel Modules
+    - Linux has at least two ways to manage kernel modules. The older way is to use a group of commands built around the insmod suite—insmod stands for insert module and is intended to deal with modules. The second way, using the modprobe command.
+    - Here, we use the lsmod command from the insmod suite to list the installed modules in the kernel:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/00e6c71d-c768-41b7-b21d-fcd7e6a0f9b0/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/00e6c71d-c768-41b7-b21d-fcd7e6a0f9b0/Untitled.png)
+    - From the insmod suite, we can load or insert a module with insmod and remove a module with rmmod, which stands for remove module. These commands are not perfect and may not take into account module dependencies, so using them can leave your kernel unstable or unusable. As a result, modern distributions of Linux have now added the modprobe command, which automatically loads dependencies and makes loading and removing kernel modules less risky.
+    - ### Finding More information with modinfo
+    - To learn more about any of the kernel module, we can use the modinfo command. The syntax for this command is straightforward: modinfo followed by the name of the module you want to learn about.:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0456e571-5244-4dd7-9399-643860846691/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0456e571-5244-4dd7-9399-643860846691/Untitled.png)
+    - ### Adding and Removing Modules with modprobe
+    - Most newer distributions of Linux, including Kali Linux, include the modprobe command for LKM management. To add a module to your kernel, you would use the modprobe command with a -a(add) switch:
+    - kali> modprobe -a <module name>
+    - To remove a module, use the -r (remove) switch with modprobe followed by the name of the module:
+    - kali> modprobe -r <module to be removed>
+    - A major advantage of using modprobe instead of insmod is that modprobe understands dependencies, options, and installation and removal procedures and it takes all of these into account before making changes. Thus, it is easier and safer to add and remove kernel modules with modprobe.
+    - ### Inserting and Removing a Kernel module
+    - Let's try inserting and removing a test module to help you familiarize yourself with this process. Let's imagine that you just installed a new video card and you need to install the drivers for it. Remember, drivers for devices are usually installed directly into the kernel to give them the necessary access to function properly. This also makes drivers fertile ground for malicious hackers to install a rootkit or other listening device.
+    - Let's assume for demonstration purposes (don't actually run these commands) that we want to add a new video driver named HackersAriseNewVideo. You can add it to your kernel by entering:
+    - kali> modprobe -a HackersAriseNewVideo
+    - To test whether the new module loaded properly, you can run the dmesg command, which prints out the message buffer from the kernel, and then filter for "video" and look for any alerts that would indicate a problem:
+    - kali> dmesg | grep video
+    - If there are any kernel messages with the word "video" in them, they will be displayed here. If nothing appears, there are so messages containing that keyword.
+    - Then, to remove this same module, you can enter the same command but with the -r (remove) switch:
+    - kali> modprobe -r HackersAriseNewVideo
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/af732daf-ef35-4959-b62f-7834a15e5de6/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/af732daf-ef35-4959-b62f-7834a15e5de6/Untitled.png)
+- **Chapter 16: Automating tasks with Job Scheduling**
+    - ## Scheduling and event or Job to run on an Automatic Basis
+    - The "cron" daemon and the "cron" table (crontab) are the most useful tools for scheduling regular tasks. The first, crond, is a daemon that runs in the background. The cron daemon checks the cron table for which commands to run at specified times. We can alter the cron table to schedule a task or job to execute regularly on a particular day or date, at a particular time daily, or every so many weeks or months.
+    - To schedule these tasks or jobs, enter them into the cron table file, located at /etc/crontab. The cron table has seven fields: the first five are used to schedule the time to run the task, the sixth field specifies the user, and the seventh field is used for the absolute path to the command you want to execute. If we were using the cron table to schedule a script, we could simply put the absolute path to the script in the seventh field.
+    - Each of the five time fields represents a different element of time: the minute, hour, day of the month, month, and day of the week, in that order. Every element of time must be represented numerically.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f8ad903d-83a2-44fd-8342-89a195eb378c/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f8ad903d-83a2-44fd-8342-89a195eb378c/Untitled.png)
+    - So, if we had written a script to scan the globe for vulnerable open ports and wanted it to run every night at 2:30 AM, Monday through Friday, we could schedule it in the crontab file.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/911ea4af-e53e-4561-a99a-13237ebdbcc5/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/911ea4af-e53e-4561-a99a-13237ebdbcc5/Untitled.png)
+    - If you want to execute a script on multiple noncontiguous days of the week, you can separate those days with commas(,)..
+    - To edit crontab, you can run the crontab command followed by the "-e" (edit) option:
+    - kali> crontab -e
+    - /etc/crontab
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6272af81-68f8-477b-b423-53a95403bcf5/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6272af81-68f8-477b-b423-53a95403bcf5/Untitled.png)
+    - Also, note that the days of week (DOW) start with Sunday(0) and end with Saturday (6)
+    - ### Scheduling a Backup Task
+    - To create a job, you simply need to edit the crontab file by adding a line in the prescribed format. So, say you wanted to create a regular backup job using a user account named "backup". You would write a script for backing up the system and save it as [systembackup.sh](http://systembackup.sh) in the /bin directory, then schedule this backup to run every Saturday night / Sunday morning at 2 AM by adding the following line to crontab:
+    - 00 2 * * 0 backup /bin/systembackup.sh
+    - Note that the * wildcard is used to indicate "any", and using it in place of a digit for the day of the month, month, or day of the week is read as "all" days or months. If you read across this line, it says:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/988b973e-a6af-4859-9b46-514cbc0d20a2/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/988b973e-a6af-4859-9b46-514cbc0d20a2/Untitled.png)
+    - The cron daemon will then execute that script every Sunday morning at 2 AM, every month.
+    - ### crontab Shortcuts
+    - The crontab file has some built-in shortcuts you can use instead of a specifying the time, day, and month every time. These include:
+        - @yearly
+        - @annually
+        - @monthly
+        - @weekly
+        - @daily
+        - @midnight
+        - @noon
+        - @reboot
+    - ## Using RC Scripts to run jobs at Startup
+    - Whenever you start your Linux system, a number of scripts are run to set up the environment for you. These are known as the rc scripts. After the kernel has initialized and loaded all its modules, the kernel starts a daemon known as init or init.d. This daemon then begins to run a number of scripts found in /etc/init.d/rc. These scripts include commands for starting many of the services necessary to run your Linux system as you expect.
+    - ### Linux Runlevels
+    - Linux has multiple runlevels that indicate what services should be started at bootup. For instance, runlevel 1 is single-user mode, and services such as networking are not started in runlevel 1. The rc scripts are set to run depending on what runlevel is selected:
+    - 0 Halt the system
+    - 1 Single-user/minimal mode
+    - 2-5 Multiuser modes
+    - 6 Reboot the system
+    - ### Adding Services to rc.d
+    - You can add services for the rc.d script to run at startup using the update-rc.d command. This command enables you to add or remove services from the rc.d script. The syntax for update-rc.d is straightforward; you simply list the command followed by the name of the script and then the action to perform:
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bc03ff05-5788-40a6-a1d5-1ee288095f1d/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bc03ff05-5788-40a6-a1d5-1ee288095f1d/Untitled.png)
+    - ## Adding Services to Your Bootup via a GUI
+    - If you're more comfortable working from a GUI to add services at startup, you can download the rudimentary GUI-based tool rcconf from the Kali repository:
+    - kali> apt-get install rcconf
+    - Once it has completed its installation, you can start rcconf by entering the following:
+    - kali> rcconf
+    - This will open a simple GUI. You can then scroll through the available services, select the ones you want to start upon bootup, and click OK.
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9b151f1e-15d1-43a7-9d02-6a6fe9afcd96/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9b151f1e-15d1-43a7-9d02-6a6fe9afcd96/Untitled.png)
+- **Chapter 17: Python Scripting**
+    - ## Adding Python Modules
+    - ### Using pip
+    - Python has a package manager specifically for installing and managing Python packages known as pip (Pip Installs Packages).
+    - kali> apt-get install python3-pip
+kali> pip3 install <package-name>
+    - ## Getting Started Scripting with Python
+    - #!/usr/bin/python3
+        - variables
+        - comments
+        - functions
+            - exit()
+            - float()
+            - help()
+            - int()
+            - len()
+            - max()
+            - open()
+            - range()
+            - sorted()
+            - type()
+        - lists
+        - Modules - A module is simply a section of code saved into a separate file so you can use it as many times as you need in your program without having to type it all out again
+        - Object-oriented programming (OOP)
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1c6ea17d-5e65-4654-a53a-1a770a6fce8f/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1c6ea17d-5e65-4654-a53a-1a770a6fce8f/Untitled.png)
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/84dc5b4c-542f-42d8-80b0-2d88f03a137d/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/84dc5b4c-542f-42d8-80b0-2d88f03a137d/Untitled.png)
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/78994542-5188-4c8a-9f6d-424d9533f5c9/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/78994542-5188-4c8a-9f6d-424d9533f5c9/Untitled.png)
+    - ## Network Communications in Python
+    - ### Building a TCP Client
+    - We'll create a network connection in Python using the "socket"module.
+    - #! /usr/bin/python3
+import socket
+s=socket.socket()
+s.connect"192.168.1.101", 22 #make a connection to a particular IP and port.
+answer=s.recv(1024) # read 1024 bytes of data from socket
+print(answer)
+s.close()
+    - ### Creating a TCP Listener
+    - We just created a TCP client that can make a connection to another TCP/IP address and port and then spy on the information being transmitted. That socket can also be used to create a TCP listener, to listen to connections from outsiders to your server.
+    - #! /usr/bin/python3
+import socket
+
+TCP_IP="192.168.181.190"
+TCP_PORT=6996
+BUFFER_SIZE=100
+
+s=socket.socket(socket.AF_INEXT, socket.SOCK_STREAM)
+s.bindTCP_IP, TCP_PORT
+s.listen(1)
+
+con,addr=s.accept()
+print("Connection address: ", addr)
+
+while 1:
+	data=conn.recv(BUFFER_SIZE)
+	if not data:break
+	print("Received data:", data)
+		conn.send(data) #echo
+conn.close()
+    - ## Dictionaries, Loops, and Controls Statements
+        - disctionaries
+        - Control Statements
+            - if
+            - if...else
+        - Loops
+            - while
+            - for
+    - ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e15844f9-3763-4647-a3c8-7e6142fb4d2d/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e15844f9-3763-4647-a3c8-7e6142fb4d2d/Untitled.png)
