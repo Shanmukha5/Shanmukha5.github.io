@@ -150,8 +150,408 @@
                 - A MAC (Media Access Control) address is also known as the physical address.
                 - It is 48-bit (6 bytes) long and expressed in hexadecimal form (HEX) `00:11:BB:33:44:FF`
                 - To discover the MAC address of the network cards installed on your computer, you can use:
-                    - `ipconfig` /all on Windows
+                    - `ipconfig /all` on Windows
                     - `ifconfig` on Unix operating systems, like MacOS
                     - `ip addr` on Linux
             - IP and MAC addresses:
-                - Two different networks are connected together by a router
+                - Two different networks are connected together by a router.
+                - Every host on the network has both an IP and a MAC address. The router has two interfaces, each with its own addresses.
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FGmkWs07zMT.png?alt=media&token=e3d7cc5e-543d-4461-966e-717ded98a381)
+                    - If workstation A wants to send a packet to workstation B, which IP and MAC addresses will it use?
+                    - Workstation A will create a packet with:
+                        - The destination IP address of workstation B in the IP header of the datagram.
+                        - The destination MAC address of the router in the link layer header of the frame.
+                        - The source IP address of workstation A.
+                        - The source MAC address of workstation A.
+                    - The router will then take the packet and forward it to B's network, rewriting the packet's MAC addresses:
+                        - The destination MAC address will be B's
+                        - The source MAC address will be router's
+                    - The router will not change the source and destination IP addresses.
+                - When a device sends a packet:
+                    - The destination MAC address is the MAC address of the next hop; this ensures that, locally, the network knows where to forward the packet.
+                    - The destination IP address is the address of the destination host; this is global information and remains the same along the packet trip.
+            - Switches:
+                - Switches work with MAC addresses.
+                - Switches also have multiple interfaces, so they need to keep a forwarding table that binds one or more MAC addresses to an interface.
+                - The forwarding table is called Content Addressable Memory (CAM) table. It has MAC addresses, Interface number, and TTL (time to live) as columns.
+                - Switches, without VLANs, do not segment networks. Router do.
+                - Usually, every interface of a router is attached to a different subnet with a different network address.
+                - Also, routers do not forward packets coming from one interface if they have a broadcast MAC address.
+                - Forwarding Tables:
+                    - The forwarding table, or Content Addressable Memory table (CAM table), is stored in the device's RAM and is constantly refreshed with new information.
+                    - If two hosts have same interface number, then they probably connected via another switch.
+                    - The TTL determines how long an entry will stay in the table. This is important because the CAM table has a finite size. So, as soon as an entry expires it is removed from the table.
+                - CAM Table Population:
+                    - Switches learn new MAC addresses dynamically; they inspect the header of every packet they receive, thus identifying new hosts.
+                    - The source MAC address is compared to the CAM table:
+                        - If the MAC address is not in the table, the switch will add a new MAC-Interface binding to the table.
+                        - If the MAC-Interface binding is already in the table, its TTL gets updated.
+                        - If the MAC is in the table but bound to another interface the switch updates the table.
+                - To forward a packet:
+                    - 1. The switch reads the destination MAC address of the frame.
+                    - 2. It performs a look-up in the CAM table.
+                    - 3. It forwards the packet to the corresponding interface.
+                    - 4. If there is no entry with that MAC address, the switch will forward the frame to all its interfaces.
+            - ARP:
+                - When a host wants to send a packet to another host, it needs to know the IP and the MAC address of the destination in order to build a proper packet.
+                - When a host needs to know the MAC addresses of other network nodes, and it can learn them by using the Address Resolution Protocol (ARP).
+                - With ARP a host can build the correct IP address - MAC address binding.
+                - When a host (A) wants to send traffic to another (B), and it only knows the IP address of B:
+                    - 1. A builds an ARP request containing the IP address of B and ff:ff:ff:ff:ff:ff as destination MAC address. This is fundamental because the switches will forward the packet to every host.
+                    - 2. Every host on the network will receive the request.
+                    - B replies with an ARP reply, telling A its MAC address.
+                - ARP cache entries have a TTL too, as the size of the device RAM is finite. A host discards an entry at the power off or when the entry's TTL expires.
+                - You can check the ARP cache of your host by typing:
+                    - `arp -a` on Windows.
+                    - `arp` on *nix operating systems
+                    - `ip neighbour` on Linux
+            - Hubs:
+                - Hubs were used in computer networks before switches. They have the same purpose but not the same functionality.
+                - Hubs are simple repeaters that do not perform any kind of header check and simply forward packets by just repeating electric signals. They receive electric signals on a port and repeat the same signals on all the other ports.
+        - TCP & UDP
+            - The Transmission Control Protocol (TCP) and the User Datagram Protocol (UDP) are the most common transport protocols used on the Internet.
+            - Computer networks can be unreliable. This means that some packets can be lost during their trip from source to destination. A packet can be lost because of network congestion, temporary loss of connection and other technical issues.
+            - When designing a transport layer protocol, the designer must choose how to deal with these limitations. For example, TCP:
+                - Guarantees packet delivery. Because of that, an application that needs a guaranteed delivery will use TCP as the transport protocol.
+                - Is also connection oriented. It must establish a connection before transferring data.
+                - TCP is the most used transport protocol on the Internet. The vast majority of applications use it, and the IP protocol suite is often called TCP/IP.
+                - Email clients, web browsers and FTP clients are some common applications using TCP.
+            - On the other hand, UDP is much more simple than TCP:
+                - It does not gurantee packet delivery.
+                - It is connectionless.
+            - UDP is faster than TCP, as it provides a better throughput (number of packets per second); in fact, it is used by multimedia applications that can tolerate packet loss but are throughput intensive.
+            - For example, UDP is used for VoIP and video streaming: applications where you can tolerate a little glitch in the audio or video.
+            - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F5mXB7edIiF.png?alt=media&token=ed319e0e-4c1e-4728-a988-810ba58ae837)
+            - Ports:
+                - Ports are used to identify a single network process on a machine. If you want to unequivocally identify a process on a network, you need to know the <IP>:<PORT> pair.
+                - To correctly address a process on a network, you have to refer to the <IP>:<Port> pair. For example:
+                    - 192.168.5.3:80
+                    - 10.11.12.1:443
+                    - 172.16.8.9:22
+                - Well-known Ports:
+                    - Ports in the ranging from 0-1023, the first 1024 that is, are called well-known ports and are used by servers for the most common services.
+                    - Each common protocol has a well-known port in the 0-1023 range. Common server processes, or daemons, use well-known ports most of the time.
+                    - Ports are assigned by IANA.
+                    - The most common ports are:
+                        - FTP - 21
+                        - SSH - 22
+                        - Telnet - 23
+                        - SMTP - 25
+                        - DNS - 53
+                        - HTTP - 80
+                        - POP3 - 110
+                        - SFTP - 115
+                        - NETBIOS - 137, 138, 139
+                        - IMAP - 143
+                        - MS SQL Server - 1433
+                        - MySQL - 3306
+                    - A daemon is a program that runs a service. System administrators can change the daemon configuration, changing the port the service listens to for connection. They do that to make services recognition a little bit harder for hackers.
+            - TCP and UDP headers:
+                - TCP Header
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FqfoiLwyBZS.png?alt=media&token=8cb882e0-bac2-4233-87f2-7cd9f1bfd38d)
+                - UDP Header
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FHQ_ae_RBSI.png?alt=media&token=a439de91-38dd-4f56-a0b1-085eebb2d434)
+            - Netstat Command:
+                - To check the listening ports and the current (TCP) connections on a host you can use:
+                    - `netstat -ano` on Windows
+                    - `netstat -tunp` on Linux
+                    - `netstat -p tcp -p udp` together with
+`lsof -n -i4TCP -i4UDP` on MacOS
+                - Another great tool for Windows is [TCPView](https://docs.microsoft.com/en-in/sysinternals/downloads/tcpview
+) from Sysinternals.
+                - TCPView shows:
+                    - Process name
+                    - PID
+                    - Protocol
+                    - Local and remote addresses
+                    - Local and remote ports
+                    - State of the connection (if applicable)
+            - TCP Three Way Handshake:
+                - To establish a connection between two hosts running TCP, they must perform three steps: the three-way handshake. They can then start the actual data transmission.
+                - The header fields involved in the handshake are:
+                    - Sequence number
+                    - Acknowledgement numbers
+                    - SYN and ACK flags
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FBkuxHl3kyL.png?alt=media&token=12740d09-8c4c-4164-b0e1-ee6b21ca691e)
+        - Firewalls and Network Defense
+            - Firewalls are specialized software modules running on a computer or a dedicated network device.
+            - They serve to filter packets coming in and out of a network.
+            - A firewall can work on different layers of the OSI model, thus providing different features and protections.
+            - Packet filtering firewalls:
+                - Most basic feature of a firewall is packet filtering.
+                - An administrator can create rules which will filter packets according to certain characteristics like:
+                    - Source IP address
+                    - Destination IP address
+                    - Protocol
+                    - Source port
+                    - Destination port
+                - Packet filters inspect the header of every packet to choose how to treat the packet. The more common actions are:
+                    - Allow: allow the packet to pass
+                    - Drop: drops the packet without any diagnostic message to the packet source host
+                    - Deny: do not let the packet pass, but notify the source host
+                - Inspecting the header of a packet does not give you any information on the actual packet content.
+                - The firewall can only filter traffic by using IP addresses, ports, and protocols. Any kind of application layer traffic will pass, even hacker's exploits.
+                - Packet filtering is not enough to stop layer 7 attacks.
+            - Application layer firewalls:
+                - Application level firewalls work by checking all the OSI 7 layers.
+                - They provide a more comprehensive protection because they inspect the actual content of a packet, not just its headers. For example:
+                    - Drop any peer-to-peer application packet.
+                    - Prevent users from visiting a site.
+                - Layer 7 firewalls are indeed able to understand most of the application layer protocols in use nowadays. Organizations use them not only to protect their network from hackers but also to filter unwanted traffic.
+            - IDS:
+                - There is not just traffic detection, but intrusion detection! Intrusion Detection Systems (IDS) inspect the application payload trying to detect any potential attack.
+                - An IDS is specialized software used for detecting ongoing intrusions. It checks for attack vectors like ping sweeps, port scans, SQL injections, buffer overflows and so on.
+                - IDS can also identify traffic generated by a virus or a worm. Pretty much every kind of network threat can be detected by a well-configured IDS.
+                - An IDS, like an antivirus, detects risky traffic by means of signatures. The vendor provides frequent signature updates as soon as new attack vectors are found in the wild. Without the right signatures an IDS cannot detect and report an intrusion; the IDS cannot detect something if it does not already know.
+                - There are also false positives. They happen when legit traffic is flagged as malicious.
+                - Detection is performed by a multitude of sensors, software components that inspect network traffic.
+                - Sensors passively intercept intrusions and communicate them to the IDS manager, software in charge of maintaining policies and which provides a management console to the system administrator.
+                - IDSs do not substitute firewalls.
+                - They support firewalls by providing a further layer of security protecting the network from mainstream and well-known attack vectors.
+                - IDSs fall into two main categories:
+                    - Network Intrusion Detection Systems (NIDS)
+                    - Host Intrusion Detection Systems (HIDS)
+                    - NIDS:
+                        - Network Intrusion detection systems inspect network traffic by means of sensors which are usually placed on a router or in a network with a high intrusion risk, like a DMZ.
+                    - HIDS:
+                        - Host IDS sensors monitor application logs, file-system changes and changes to the operating system configuration.
+                    - IDSs, unlike firewalls, can detect suspicious activities and report them to the network administrator. Suspicious activity is logged for future analysis, but it is not blocked.
+                - IPS:
+                    - Intrusion Prevention Systems (IPS) can drop malicious requests when the threat has a risk classification above a pre-defined threshold.
+                - Spot an Obstacle:
+                    - During penetration testing activities, you might want to identify if a firewall-like mechanism is used in the environment.
+                    - If you suspect presence of a firewall, you might want to check for anomalies in TCP Three-Way Handshake.
+                    - When a firewall is in place, the following behavior may be spotted:
+                        - TCP SYN are sent, but there no TCP SYN/ACK replies.
+                        - TCP SYN packets are sent but a TCP RST/ACK reply is received.
+                    - Note: that this type of observation does not determine whether the detected obstacle is a firewall, an IDS, or any other device; this just helps you to identify environmental constraints.
+                - NAT and Masquerading:
+                    - Firewalls not only filter packets but can also be used to implement Network Address Translation or NAT.
+                    - Network Address Translation (NAT) or IP masquerading are two techniques used to provide access to a network from another network.
+                    - The NAT device rewrites the source IP address of every packet sent to Internet from private network, thus masquerading the original client's IP address.
+                    - A machine on the Internet will never know the original client's IP address.
+        - DNS
+            - The Domain Name System, or DNS, is an application layer protocol.
+            - The DNS primarily converts human-readable names, like www.elearnsecurity.com, to IP addresses and is a fundamental support protocol for the internet and computer networks in general. It is widely recognized that the entire internet security is relying upon DNS.
+            - DNS Structure:
+                - A DNS name such as www.elearnsecurity.com or members.elearnsecurity.com can be broken down into the following parts:
+                    - Top level domain (TLD)
+                    - Domain part
+                    - Subdomain part (if applicable)
+                    - Host part
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FpAyLPZb3Rz.png?alt=media&token=fe03fa24-c63d-40e9-9c4e-8ce5e8b4fa8e)
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FckMfagQ3d3.png?alt=media&token=7f6e2af9-b72b-43fb-ad73-c0ba9751bd6f)
+                    - Name resolution is performed by resolvers, servers that contact the top level domain (TLD) DNS servers and follow the hierarchy of the DNS name to resolve the name of a host.
+                    - Resolvers are DNS servers provided by your ISP or publicly available like OpenDNS or Google DNS.
+            - DNS Names Resolution:
+                - To convert a DNS name into an IP address, the operating system must contact a resolver server to perform the DNS resolution.
+                - The resolver breaks down the DNS name in its parts and uses them to convert the DNS name into an IP address.
+                - DNS Resolution Algorithm:
+                    - 1. Firstly, the resolver contact one of the root name servers; these servers contain information about the top level domains.
+                    - 2. Then, it asks the TLD name server what's the name server that can give information (authoritative name server) about the domain the resolver is looking for.
+                    - 3. If there are one or more subdomains, step 2 is performed again on the authoritative DNS server for every subdomain.
+                    - 4. Finally, the resolver asks for the name resolution of the host part.
+                - Resolvers and Root Servers:
+                    - IP addresses of the root servers are hardcoded in the configuration of the resolver. System administrators keep the list updated, otherwise, the resolver would not be able to contact a root server!
+                - Reverse DNS Resolution:
+                    - The domain name system can also perform the inverse operation; it can convert an IP address to a DNS name.
+                    - Keep in mind that this is not always the case; the administrator of a domain must have enabled and configured this feature for the domain to make it work.
+                - The DNS is used to perform name resolution. The domain name system is not just that, it is used to identify what the mail servers for a domain are, to know what is the right server for a specific role and much more.
+                - The DNS is also very important to the security of the whole internet because breaking DNS security means breaking SSL and TLS.
+        - Wireshark
+            - Wireshark is a network sniffer and protocol analyzer.
+            - This means that you can use it to analyze every packet, traffic stream, or connection that hits your computer network interface(s).
+            - Wireshark can capture all the traffic seen by the network card of the computer running it.
+            - To understand what traffic a network card sees, you have to know that most network cards, also known as Network Interface Cards (NIC), can work in promiscuous or monitor mode.
+            - NIC Promiscuous Mode:
+                - During normal operations, a network card discards any packet addresses to another NIC. In promiscuous mode, a network card will accept and process any packet it receives.
+                - With the introduction of switched networks, sniffing other machines Ethernet traffic got harder. You have to perform an attack such as ARP poisoning or MAC flooding in order to do that.
+                - WiFi medium (the air), instead, is broadcast by nature, so it's possible to still detect traffic destined to a different host.
+            - The center pane gives you access to all the protocols layers used by a packet.
+            - Filtering:
+                - Wireshark can filter traffic at capture or at display time. Each method has its own pros an cons.
+                - You can set capture filters before starting the capture so that Wireshark will capture only packets matching the filters.
+                    - Here are some basic capture filters:
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2Fn9_NLgJuIJ.png?alt=media&token=7ae7ff52-45e0-4122-a033-a1d71c5af433)
+                - Capture filters:
+                    - Capture filters will downsize the amount of traffic gathered.
+                    - The final capture will be smaller, and it will contain only the needed traffic.
+                - Display filters:
+                    - However, capture filters might not catch interesting traffic! Display filters instead allow you to inspect and apply very granular filters to every field of the captured packets. Wireshark then displays only the packets matching the filters.
+                    - You can always remove or fine tune a display filter, something you can't do with the capture filter (you would have to re-start the capture from scratch).
+                    - The background of the text-box will turn red if the filter is invalid or green when the filter is valid.
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F_i_fdWCqyQ.png?alt=media&token=625e0337-902d-4765-bd40-b4a74763df85)
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FNucdcoBSNT.png?alt=media&token=38c2eb14-3d10-4bd6-b425-a9de9eb3ec45)
+    - 130.Web Applications
+        - Web applications are applications running on web servers and accessible via web browsers.
+        - HTTP Protocol Basics
+            - Hypertext Transfer Protocol (HTTP) is the most used application protocol on the Internet. It is the client-server protocol used to transfer web pages and web application data.
+            - In HTTP, the client, usually a web browser, connects to a web server such as MS IIS or Apache HTTP Server. HTTP is also used under the hood by many mobile and modern applications.
+            - During an HTTP communication, the client and the server exchange messages.
+            - The client sends requests to the server and gets back responses.
+            - HTTP works on top of TCP protocol.
+            - That means, first a TCP connection is established, and then the client sends its request, and waits for the answer. The server processes the request and sends back its answer, providing a status code and appropriate data.
+            - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F5dr6M-sY4D.png?alt=media&token=faabd7f5-6f6b-4868-94ba-c3eeff798158)
+            - The format of an HTTP message is:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F4l6J3MN9Z7.png?alt=media&token=1db7da87-0fd3-4fff-8b00-925c70c8cbe4)
+                - To end lines in HTTP, you have to use the \r (carriage return) and the \n (newline) characters.
+                - The header contains a request followed by some header fields. Every header fields has the following format:
+                    - Header-name: header value
+            - HTTP Requests:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FBcxE1IVklQ.png?alt=media&token=49406553-6acb-4549-9d2f-a0cac35d8c13)
+                - "GET" is the HTTP verb of the request. The HTTP verb, or request method, states the type of the request.
+                    - There are many HTTP methods like:
+                        - TRACE
+                        - HEAD
+                        - POST
+                - After the HTTP VERB you can see the path (/) and the protocol version (HTTP 1.1).
+                    - The path tells the server which resource the browser is asking for. The protocol version tells the server how to communicate with the browser.
+                - The Host header field specifies the Internet hostname and port number of the resource being request.
+                    - The host value is obtained from the URI of the resource
+                - User-Agent tells the server what client software is issuing the request.
+                    - A client count be:
+                        - Firefox
+                        - Internet Explorer
+                        - Safari
+                        - Opera
+                        - Chrome
+                        - A mobile app...
+                    - It also reveals to the server the operating system version.
+                - The browser sends the Accept header field to specify which document type it is expecting in the response.
+                - Similarly, with Accept-Language, the browser can ask for a specific (human) language in the response
+                - Accept-Encoding works similarly to Accept but restricts the content encoding, not the content itself.
+                - The Connection header field allows the sender to specify options that are desired for that particular connection.
+                    - Future communications with the server will reuse the current connection.
+            - HTTP Responeses:
+                - When the server receives a request, it processes it and then sends an HTTP response to the client. The response has its own header format.
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FM_ngD6d9LE.png?alt=media&token=0742fc45-7ccf-4dce-aa1e-7e78458d2c8a)
+                    - The first line of a Response message is the Status-Line, which consists of the protocol version (HTTP 1.1) followed by a numeric status code (200) and its relative textual meaning (OK).
+                        - Some common status codes are:
+                            - 200 OK: the resource is found.
+                            - 301 Moved Permanently: the requested resource has been assigned a new permanent URI.
+                            - 302 Found: the resource is temporarily under another URI.
+                            - 403 Forbidden: the client does not have enough privileges, and the server refuses to fulfill the request.
+                            - 404 Not Found: the server cannot find a resource matching the request.
+                            - 500 Internal Server Error: the server does not support the functionality required to fulfill the request.
+                    - Date represents the date and time at which the message was originated.
+                    - With the Cache-Control header, the server informs the client about cached content.
+                        - Using cached content saves bandwidth, as it prevents the client from re-requesting unmodified content.
+                    - Content-Type lets the client know how to interpret the body of the message
+                    - Content-Encoding extends Content-Type
+                    - The Server header field simply contains the header of the server that generated the content.
+                    - Content-Length indicates the length, in bytes, of the message body.
+            - HTTPS:
+                - HTTP content, as in every clear-text protocol, can be easily intercepted or mangled by an attacker on the path. Moreover, HTTP does not provide strong authentication between the parties.
+                - HTTP Secure (HTTPS), or HTTP over SSL/TLS, is a method to run HTTP which is a clear-text protocol over SSL/TLS, a cryptographic protocol.
+                - This layering techniques provide confidentiality, integrity protection and authentication to the HTTP protocol.
+                - In other words, when using HTTPS:
+                    - An attacker on the patch cannot sniff the application layer communication.
+                    - An attacker on the path cannot alter the application layer data.
+                    - The client can tell the real identity of the server and, sometimes, vice-versa.
+                - HTTPS offers encryption, which means that a network adjacent user is able to sniff the traffic, but he will not know:
+                    - HTTP Request headers, body, target domain
+                    - HTTP Response headers, body
+                - On the other hand, when inspecting HTTPS, one cannot know what domain is contacted and what data is exchanged.
+                - A network adjacent user might recognize:
+                    - Target IP address
+                    - Target port
+                    - DNS or similar protocols may disclose which domain user tries to resolve.
+                - HTTPS does not protect against web application flaws! All the attacks against an application happen regardless of SSL/TLS.
+                - The extra encryption layer just protects data exchanged between the client and the server. It does not protect from an attack against the application itself.
+                - Attacks such as XSS and SQL injections will still work.
+        - HTTP Cookies
+            - HTTP is a stateless protocol; this means that websites cannot keep the state of a visit across different HTTP requests.
+            - In other words, every HTTP request is completely unrelated to the ones preceding and following it.
+            - To overcome this limitation, sessions and cookies were invented in 1994, to make HTTP stateful.
+            - Cookies are just textual information installed by a website into the "cookie jar" of the web browser.
+            - The cookie jar is the storage space where a web browser stores the cookies.
+            - Cookies Format:
+                - A server can set a cookie via the Set-Cookie HTTP header field in a response message. A cookie contains the following attributes:
+                    - The actual content
+                    - An expiration date
+                    - A path
+                    - The domain
+                    - Optional flags:
+                        - Http only flag
+                        - Secure flag
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FYuNps8h7EM.png?alt=media&token=3b03e92d-f09d-4fa0-b788-29f8da3bd979)
+            - Cookies Handling:
+                - Browsers use domain, path, expires and flags attributes to choose whether or not to send a cookie in a request.
+                - Cookies are sent only to the valid domain/path when they are not expired and according to their flags.
+            - Cookie Domain:
+                - The domain field and the path field set the scope of the cookie. The browser sends the cookie only if the request is for the right domain.
+                - When a web server installs a cookie, it sets the domain field, e.g., elearnsecurity.com. Then, the browser will use the cookie for every request sent to that domain and all its subdomains.
+                - If the server does not specify the domain attribute, the browser will automatically set the domain as the server domain and set the cookie host-only flag; this means that the cookie will be sent only to that precise hostname.
+            - Cookie Path:
+                - The path and the domain attributes set the scope of a cookie.
+                - The browser will send a cookie to the right domain and to any subpath of the path field value.
+                - When a cookie has the path attribute set to:
+                    - path=/the/path
+                - The browser will send the cookie to the right domain and to the resources in:
+                    - /the/path
+                    - /the/path/sub
+                - But, it will not send it to /otherpath.
+            - Cookie Expires Attribute:
+                - The expires attribute sets the validity time window of a cookie.
+                - A browser will not send an expired cookie to the server. Session cookies expire with the HTTP session.
+            - Cookie Http-Only Attribute:
+                - When a server installs a cookie into a client with the http-only attribute, the client will set the http-only flag for that cookie. This mechanism prevents JavaScript, Flash, Java and any other non-HTML technology from reading the cookie, thus preventing cookie stealing via XSS.
+            - Cookie Secure Attribute:
+                - Secure flag creates secure cookies that will only be send over an HTTPS connection (they will not be sent over HTTP).
+            - Cookie Content:
+                - A cookie can carry a number of values. A server can set multiple values with a single Set-Cookie header by specifying multiple KEY=VALUE pairs.
+            - Cookie Protocol:
+                - Cookies are often installed during a login.
+                - The server sends a response with a Set-Cookie header field, thus telling the browser to install the cookie.
+                - For every subsequent request, the browser considers:
+                    - Domain
+                    - Path
+                    - Expiration
+                    - Flags
+                - If all the checks pass, the browser will insert a cookie: header in the request.
+        - Sessions
+            - Sometimes the web developer prefers to store some information on the server side instead of the client side; this happens to hide the application logic or just to avoid the back and forth data transmission typical of cookies.
+            - Sessions are a mechanism that lets the website store variables specific for a given visit on the server side.
+            - Each user session is identified by a session id, or token, which the server assigns to the client.
+            - The client then presents this ID for each subsequent request, thus being recognized by the server.
+            - By means of the session ID, the server retrieves the state of the client and all its associated variables. The server stores Sessions IDs inside text files in its storage. 
+            - Session cookies:
+                - Session cookies just contain a single parameter value pair referring to the session.
+                - Websites running PHP install session cookies by using the "PHPSESSID" parameter name, while JSP websites use 'JSESSIONID". Each development language has its own default session parameter name.
+                - Of course, the web developer can also choose to use a custom parameter name.
+                - If needed, servers install session cookies after a browser performs some kind of activity, like:
+                    - Opening a specific page
+                    - Changing settings in the web application
+                    - Logging in 
+                - The browser then uses the cookie in subsequent requests. A session could contain many variables, so sending a small cookie keeps the bandwidth usage low.
+            - Session IDs can also be transmitted via GET requests.
+        - Same Origin Policy
+            - Same Origin Policy (SOP) is a critical point of web application security.
+            - This policy prevent JavaScript code from getting or setting properties on a resource coming from a different origin.
+            - The browser uses:
+                - Protocol, Hostname, and Port
+            - To determine if JavaScript can access a resource: Hostname, port, and protocol must match.
+            - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F0IwZqfosuL.png?alt=media&token=e0f4d8ed-696c-469d-965f-52196895ca55)
+            - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FsrntflxgM-.png?alt=media&token=ac36d417-67d8-4c10-b2aa-9098dfed5fae)
+            - The entire web application security is based on Same Origin Policy.
+            - If a script on domain A was able to read content on domain B, it would be possible to steal clients' information and mount a number of very dangerous attacks.
+        - Burp Suite
+            - Intercepting Proxies:
+                - An intercepting proxy is a tool that lets you analyze and modify any request, and any response exchange between an HTTP client and a server.
+                - By intercepting HTTP messages, a pentester can study a web application behavior and manually test for vulnerabilities.
+                - Proxies are fundamental while analyzing web applications and will become your best friend for web-app testing.
+                - Do not confuse intercepting proxies with common web proxy servers like Squid. Proxy servers have different purposes: bandwidth optimization, content filtering and more.
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FGTFhSpwRep.png?alt=media&token=0d7c76c3-cc87-4fc4-b90e-fb0b1f164631)
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F-sdf6Hwvcl.png?alt=media&token=bf528751-5d26-4302-9ecd-cede17e3c75c)
+            - Burp Proxy:
+                - Burp suite will let you:
+                    - Intercept requests and responses between your browser and the web server
+                    - Build request manually.
+                    - Crawl a website by automatically visiting every page in a website.
+                    - Fuzz web applications by sending them patterns of valid and invalid inputs to test their behavior.
+                - By using Burp, you can intercept and modify requests coming from your browsers before they are sent to the remote server.
+                - You can modify the header and the body of a message by hand or automatically.
+            - Burp Proxy Configuration
+            - Burp Repeater:
+                - Burp Repeater, which lets you manually build raw HTTP requests.
+    - 140.Penetration Testing
