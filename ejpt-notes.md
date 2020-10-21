@@ -787,7 +787,7 @@
                 - Many successful security breaches exploit the weakest link in the security chain: human!
                 - With the advent of social networks, hackers can now access information on people and products which were very hard to find only a few years ago.
                 - Criminals can (and actually do) now exploit this valuable information to mount sophisticated attacks.
-                - You, as a professional penetration tester can do the same, by performing queries on common soci 
+                - You, as a professional penetration tester can do the same, by performing queries on common social networks like Facebook, Twitter, LinkedIn, Google+ and so on. 
                 - Given the vast array of social networks out there, the right ones for your engagement depends on the specific client and engagement.
                 - While LinkedIn, Twitter, and Facebook are good in terms of a "general purpose" shot, you have to choose between other social networks by understanding not only the target company industry but also some of the interests of its employees.
                     - LinkedIn -- personal and work phone numbers, email addresses, different integrated accounts
@@ -1201,3 +1201,467 @@ fclose($fp);
                     - The Web Application Hacker's Handbook
                     - OWASP-XSS
         - SQL Injections
+            - SQL Injection (SQLi) attacks allow an unauthorized user to take control over SQL statements used by a web application.
+            - This kind of attack has a huge impact on a web site because getting control over a backend database means controlling:
+                - User's credentials
+                - Data of the web application
+                - Credit card numbers
+                - Shopping transactions
+                - And much more!
+            - SQL Statements:
+                - `SELECT name, description FROM products WHERE id=9;`
+                - `SELECT <columns list> FROM <table> WHERE <condition>;`
+                - `<SELECT statement> UNION <other SELECT statement>;`
+                - Comments -- # or --
+                    - `SELECT field FROM table; # this is a comment`
+                    - `SELECT field FROM table; -- this is another comment`
+            - SQL Queries Inside Web Applications:
+                - To perform the same above tasks from within a web application, the application must:
+                    - Connect to the database
+                    - Submit the query to the database
+                    - Retrieve the results
+            - Vulnerable Dynamic Queries:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F0DWCpNd_S6.png?alt=media&token=10ca7bdf-0554-4c55-ac01-4ad07ffa8d85)
+                - This behavior is very dangerous because a malicious user can exploit the query construction to take control of the database interaction.
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FZB7FxtUFAT.png?alt=media&token=802054b5-b4af-46ba-940e-3aaedf219b39)
+                - The query then becomes:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F4Of83lZg9c.png?alt=media&token=8d17fa94-6a0d-4a4e-9c99-fc86a31b8f78)
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FJw-Fx3n7R6.png?alt=media&token=58dd4555-76e8-4f44-8c04-c0242de4e832)
+                - Then the query becomes:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2Faw0OWzRQ-x.png?alt=media&token=4fe5f85e-0e27-43d8-a088-914bbf509394) 
+            - Finding SQL Injections:
+                - To exploit a SQL injection, you first have to find where the injection point is, then you can craft a payload to take control over a dynamic query.
+                - To identify an injection point, you have to test every supplied user input used by the web application.
+                - When we talk about a web app, user inputs are:
+                    - GET parameters
+                    - POST parameters
+                    -  HTTP Headers
+                        - User-Agent
+                        - Cookie
+                        - Accept
+                        - many more...
+                - Every input must be tested to conduct a professional pentest!
+                - Testing an input for SQL injections means trying to injecct:
+                    - String terminators: ' and "
+                    - SQL commands:  SELECT, UNION, and others
+                    - SQL comments: # or --
+                - Also, check if the web application starts to behave oddly. Remember, always test one injection at a time! Otherwise you will not be able to understand what injection vector is successful.
+                - From Detection to Exploitation:
+                    - Finding a possible injection point is just one part of the job. To successfully exploit a SQL injection you need to know the right techniques.
+                    - Then, after finding the best way to manually exploit an injection, you can efficiently automate the exploitation using automatic tools.
+            - Boolean Based SQL Injections:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FBBxV8Q2JeK.png?alt=media&token=1cd0d28d-c55f-4b6d-a13a-fd82e3a9e8d5)
+                - When crafting a Boolean based SQLi payload, you want to transform a query in a True/False condition, which reflects its state to the web application output.
+                - Examples to test:
+                    - ' OR 'a'='a
+                    - ' OR '1'='1
+                    - ' OR '1'=`11
+                - Exploiting a Boolean Based SQLi:
+                    - user() returns the name of the user currently using the database.
+                    - substring() returns a substring of the given argument. It takes three parameters: the input string, the position of the substring and its length.
+            - UNION Based SQL Injections:
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FZ-xzkYFGKd.png?alt=media&token=40f17c83-72c1-4788-94d0-4dcacb5b2c74)
+                - The payload forces the web application to display the result of the user() function on the output page
+                - Please also note a little trick we used in the payload: the comment is not just two dashes and a space, it also contains a third dash.
+                - This because most of the browsers automatically remove trailing spaces in the URL so, if you need to inject a comment via a GET request, you have to add a character after the trailing space of the comment.
+                - Avoiding SQL Disaster:
+                    - When attacking an SQL vulnerability you should keep in mind that not only SELECT type queries can be vulnerable.
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FsW0-oT8WVv.png?alt=media&token=f1237aa3-f0b3-489e-950f-08157a780ed0)
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2F8QBzni0JQ0.png?alt=media&token=54bfd123-3ec4-4c71-b562-1500992f175b)
+                    - When injecting to a SQL query, you should have a brief idea of what it does. To understand it, you can always think about what the outcome of the application functionality of where you found the SQL injection.
+            - SQLMap:
+                -  SQLMap is an open source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws and taking over of database servers.
+                - The basic syntax is pretty simple: `sqlmap -u <URL> -p <injection parameter> [options]`
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2FfZ_rQ0oPF_.png?alt=media&token=6e302206-ae16-4f4b-bd8e-768028419541)
+                - If you have to exploit a POST parameter you have to use: `sqlmap -u <URL> --data=<POST string> -p parameter [options]`
+    - System Attacks
+        - Malware
+            - Malware, short for "Malicious software", is any software used to misuse computer systems with the intent to:
+                - Cause denial of service
+                - Spy on users activity
+                - Get unauthorized control over one or more computer systems
+                - Cause other malicious activities
+                - Malware:
+                    - Malware classification is based on the behavior of the software, rather than the malicious features it provides.
+                        - Virus
+                        - Trojan Horses
+                        - Rootkit
+                        - Bootkit
+                        - Backdoors
+                        - Adware
+                        - Spyware
+                        - Greyware
+                        - Dialer
+                        - Key-logger
+                        - Botnet
+                        - Data-Stealing Malware
+                        - Worm
+                    - Virus:
+                        - A computer virus is a small piece of code that spreads from computer to computer, without any direct action or authorization by the owners of the infected machines.
+                    - Trojan Horse:
+                        - A Trojan horse, as the name suggests, is a malware that comes embedded in a seemingly harmless file such as an executable, an MS Office document, a screen saver or a PDF file.
+                    - Backdoor:
+                        - Backdoors are software made by two components: a server and a backdoor client.
+                        - The Backdoor server runs on the victim machine listening on the network and accepting connections. The client usually runs on the attacker machine, and it is used to connect to the backdoor to control it.
+                        - NetBus and SubSeven are very famous, old school backdoors.
+                        - But what if a wise system administrator configures the network firewall to block connections from the internet to internal machines.
+                        - A well-done backdoor would use any means to make the traffic legitimate; the easiest way to achieve this is by using a Connect-back Backdoor.
+                        - A connect-back backdoor, or reverse backdoor, is a common mechanism to bypass firewalls.
+                        - Instead of having the victim machine act as a server and listening to the client's command, it acts as a client and connects back to the penetration tester's machine.
+                        - The attacker machine would listen on a port that is known to be commonly allowed on most of the firewalls, such as port 80 (the web server port.)
+                    - Rootkit:
+                        - A rootkit is a malware which is designed to hide itself from users and the antivirus program in order to completely subvert the OS functioning.
+                    - Bootkit:
+                        - Bootkits are rootkits which circumvent OS protection mechanisms by executing during the bootstrap phase.
+                        - They start before the operating system, so they get complete control over the machine and the OS.
+                    - Adware:
+                        - Adware is annoying software that shows advertisements to computer users.
+                    - Spyware:
+                        - Spyware is software used to collect information about users' activity. Spyware collects information such as:
+                            - The OS installed on a machine
+                            - Visited websites
+                            - Passwords
+                    - Greyware:
+                        - Greyware is a general term used to indicate Malware which does not fall under a specific category.
+                        - For example, it can be either spyware, adware or both.
+                    - Dialer:
+                        - A Dialer is software that tries to dial numbers on dial-up connections in order to collect money from the victim's phone bill.
+                    - Keylogger:
+                        - A keylogger is a special software which records every keystroke on the remote victim machine.
+                        - Operations performed by keyloggers are:
+                            - Recording keystrokes
+                            - Recording the window name where the victim user was typing
+                            - Saving the keystrokes in a log file on the victim machine
+                            - Sending the logs to a server controlled by the penetration tester
+                            - Hardware keyloggers, rootkit keyloggers.
+                    - Bots:
+                        - Bots are small pieces of software that gets installed on millions of internet-connected machines to perform Distributed Denial of Service or serving as spamming sources.
+                        - These Bots are commanded remotely by a so-called Command and Control server.
+                    - Ransomware:
+                        - Ransomware is software that encrypts a computer or smartphone content with a secret key.
+                        - It then asks its victims for a ransom to give them the content back.
+                    - Data Stealing Malware:
+                        - Data stealing malware has one precise goal: stealing the most important data on the victim's hard disk and sending it back to the attacker. Most of the time, this specific malware incarnation is targeted to a specific company and tailored to work on the target environment.
+                    - Worms:
+                        - Worms spread over the network by exploiting operating systems and software vulnerabilities. Worms can also exploit default credentials or misconfigurations to attack a service or a machine. 
+        - Password Attacks
+            - Passwords are the first and, most of the time, the only line of defense of systems, services and accounts against unauthorized access. To protect their users and applications, operating systems have to store passwords securely.
+            - To make things harder for attackers, passwords are stored by using a one-way encryption algorithm; there is no way to know the password starting from its encrypted form.
+            - Cryptographic hashing functions are used to transform a password from its clear-text form to an encrypted and safe to store form.
+            - Password cracking is the process of recovering clear-text passwords starting from their hash.
+            - It is basically a guessing process; the attacker tries to guess the password, hashes it and then compares the result against the password file.
+            - Trying to manually crack a password is more than impractical. To automate such processes, there are two main strategies:
+                - Brute force attacks
+                - Dictionary attacks
+            - Brute force attacks:
+                - Brute force attacks are the only way to be certain of finding someone's password. To automate a brute force attack, you have to write a program which generates every possible password.
+                - Given enough time, a brute force attack is always successful!
+                - John the Ripper:
+                    - John the Ripper is an extremely popular password cracking tool written for Unix-based operating systems. 
+                    - John the Ripper can mount both brute force and dictionary-based attacks against a password database.
+                    - To perform a pure brute force attack, you have to use the following syntax: `john -incremental -users:<users list> <file to crack>`
+            - Dictionary Attacks:
+                - Dictionary attacks do not try to generate every possible password, but they use a dictionary of common passwords, testing every single entry it contains.  
+                - Dictionary attacks are faster than pure brute force attacks because even a large disctionary, in order of magnitude, is smaller than the number of possible valid passwords for an account.
+                - Performing a Dictionary Attack:
+                    - To carry out a dictionary attack, you need:
+                        - A password file containing the hashed passwords to crack.
+                        - A dictionary, or wordlist, of passwords.
+                        - A tool to test every password in the wordlist against the password file.
+                    - Wordlists usually contain commonly used passwords such as "admin", "password1234", etc.,
+                - Weaknesses of Dictionary Attacks:
+                    - Poorly chose or default passwords are more exposed to dictionary cracking.
+                    - Uncommon passwords could be safe, but only a truly random and long password can be considered safe.
+                    - If the password is not in the wordlist, the tool performing a dictionary attack will not be able to crack the password.
+                - Mangling words:
+                    - Being unable to crack a password just because of case differences or some digits at the end of a word would be a shame. Because of that, cracking tools provide some options to mangle the words in a dictionary.
+                    - Some variations on "cat" could be: cat12, caT, CAT, Cat CAt, c@t and so on...
+                - Dictionary Attacks with John the Ripper:
+                    - `john -wordlist<=custom wordlist file> <file to crack>
+                - Installing Passwords dictionaries:
+                    - Seclists - `apt install seclists`
+            - Rainbow Tables:
+                - Rainbow tables offer a tradeoff between the processing time needed to calculate the hash of a password and the storage space needed to mount an attack.
+                - The space needed to store a rainbow table depends on how many characters are allowed in a password (upper and lower case characters, digits, symbols) and its length. Moreover, the specific hash function used to store the password plays a role.
+                - This approach reduces a cracking session time from days to seconds!
+                - Ophrcrack:
+                    - A great tool to perform rainbow cracking is ophcrack. It is a tool aimed at Windows password recovery, so you can use it only to crack Windows authentication passwords.
+                    - Ophcrack can run on Windows, Linux, Unix, and OSX.
+            - Hashcat
+        - Buffer Overflow Attacks
+            - Many different attacks widely exploit buffer overflow vulnerabilities. They work by taking control of the execution flow of a piece of software or a routine of the operating system.
+            - Taking control of the execution of a program means being able to force it to behave differently compared to what the application author designed.
+            - A buffer overflow attack can lead to:
+                - An application or operating system crash, thus causing a denial of service.
+                - Privilege escalation
+                - Remote code execution
+                - Security features bypass
+            - Buffers:
+                - A buffer is an area in the computer Random Access Memory (RAM) reserved for temporary data storage. Data such as:
+                    - User input
+                    - Parts of a video file
+                    - Server banners received by a client application
+                    - And so on
+                - Buffers have a finite size; this means that they can only contain a certain amount of data.
+                - If the developer of an application does not enforce buffers' limits, an attacker could find a way to write data beyond those limits, thus actually writing arbitrary code in the computer RAM; this can be exploited to get control over the program execution flow!
+            - The Stack:
+                - Buffers are stored in a special data structure in the computer memory called a stack.
+                - A stack is a data structure used to store data.
+                - The approach is called Last in First Out (LIFO) and uses two methods:
+                    - Push, which adds an element to the stack
+                    - Pop removes the last inserted element
+                - Allocating Space on the Stack:
+                    - In modern operating systems, the stack is used in a more flexible way. Even if push and pop are still used, an application can randomly access a position on the stack to read and write data.
+                    - To save some stack space for later use, the application can simply reserve some memory allocations on the stack and then access them.
+                - Overflows in the Stack:
+                    - If an attacker can write data to another contents, exploiting the stack.
+                - The Stack in an Application:
+                    - The stack used by applications and operating systems does not only contain data, but also information about the execution flow.
+                    - If we analyze a function call, we will see that the stack contains the function parameters, its local variables and the memory address where the execution of the program must continue after the function returns.
+                    - So overwriting a function return address means getting control over the application. Moreover, if an attacker manages to write some valid code in RAM, they can force the victim function to run their code.
+                    - A raw overflow that just overwrites some memory locations will crash the application, while a well-engineered attack is able to execute code on the victim machine.
+                - How Buffer Overflow Attacks Work:
+                    - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2Fjii1XMNzMO.png?alt=media&token=a00e4c73-8462-42ad-b016-a7a251ea63a6)
+                    - Looking at this picture you should understand that if an attacker manages to overflow Local Variable 1, they are able to overwrite Base Pointer and then Return address!
+                    - If they overwrite Return Address with the right value, they are able to control the execution flow of the program!
+                    - This technique can be exploited by writing custom tools and applications or by using hacking tools such as Metasploit.
+                    - Being able to write a buffer overflow exploit requires a deep understanding of assembly programming, how applications and operating systems works and some exotic programming skills. 
+    - Network Attacks
+        - Authentication Cracking
+            - Every service requiring network authentication:
+                - SSH
+                - Telnet
+                - Remote Desktop
+                - HTTP authentication
+                - And more...
+            - Brute Force vs Dictionary Attacks:
+                - When penetration testers need to access a network service, they can try to obtain valid credentials by using brute force or dictionary attacks.
+                - Performing pure brute force attacks over a network are very impractical because of the time needed to run each probe.
+                - In offline brute forcing, the time needed to test a single password is given by the processing time; during a network authentication attack, the time needed to test a password depends on many other factors.
+                - Such factors include:
+                    - Network latency: in other words, the time needed to transmit information from the penetration tester's machine to the target server and vice versa.
+                    - Delays on the attacked service: many services wait some seconds during authentication routines with the scope of making authentication attacks even slower.
+                    - Processing time on the attacked server: as in offline attacks, the target server must encrypt and check the credentials.
+            - Weak and Default Credentials:
+                - Because of these reasons, network authentication cracking relies almost entirely on dictionary-based attacks.
+                - If a user chooses a weak password or an administrator leaves default service credentials unmodified, a dictionary attack will bypass the password protection.
+            - Authentication Cracking Tools:
+                - Hydra:
+                    - Hydra is a fast, parallelized, network authentication cracker that supports different protocols.
+                    - Hydra can attack nearly fifty different service types, including:
+                        - Cisco auth
+                        - FTP
+                        - HTTP
+                        - IMAP
+                        - RDP 
+                        - SMB
+                        - SSH
+                        - Telnet
+                    - The tool can use dictionaries of usernames or passwords and can also perform pure brute force password attacks. Hydra architecture is based on modules. A module is a piece of code that lets Hydra attack a specific protocol.
+                    - To get detailed information about a module you can use the "-U" command line switch: `hydra -U rdp`
+                    - To launch a dictionary attack, against a service, with a list of usernames (inside users.txt file) and a list of passwords (pass.txt file), you have to use the following syntax: `hydra -L users.txt -P pass.txt <service://server> <options>`
+        - Windows Shares
+            - NetBIOS:
+                - NetBIOS stands for Network Basic Input Output System. Servers and clients use NetBIOS when viewing network shares on the local area network.
+                - NetBIOS can supply some of the following information when querying a computer:
+                    - Hostname
+                    - NetBIOS name
+                    - Domain
+                    - Network shares
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2Ff6ps3eKqnv.png?alt=media&token=ab224fd5-9763-491c-94ae-7d9684242945)
+                - UDP is used to perform NetBIOS name resolution and to carry other one-to-many datagram-based communications.
+                - By using NetBIOS datagrams, a host can send small messages to many other hosts.
+                - Heavy traffic, such as a file copy, relies on TCP by using NetBIOS sessions.
+                - When an MS Windows machine browses a network, it uses NetBIOS.
+                    - Datagrams to list the shares and the machines
+                    - Names to find workgroups
+                    - Sessions to transmit data to and from a Windows share.
+            - Shares:
+                - A Windows machine can share a file or a directory on the network; this lets local and remote users access the resource and, possibly, modify it.
+                - Creating network shares in a Windows-based environment is fairly easy. Generally, users just need to turn on the File and Printer Sharing service and then they can start choosing directories or files to share.
+                - Users can also set permissions on a share, choosing who can perform operations such as reading, writing, and modifying permissions.
+                - Starting from Windows Vista, users can choose to share a single file, or use the Public directory. When sharing a single file, they can choose local or remote users to share the file with.
+                - When using the Public directory, they can choose which local users can access the files on the share, but they can only allow everyone or no one in the network to access the share.
+            - UNC Paths:
+                - An authorized user can access shares by using Universal Naming Convention paths (UNC paths).
+                - The format of a UNC path is: `\\ServerName\ShareName\file.nat`
+            - Administrative Shares:
+                - There are also some special default administrative shares which are used by system administrators and Windows itself:
+                    - `\\ComputerName\c$` lets an administrator access a volume on the local machine. Every volume has a share (c$, D$, E$, etc.).
+                    - `\\ComputerName\admin$` points to the windows installation directory.
+                    - `\\ComputerName\ipc$` is used for inter-process communication. You cannot browse it via Windows Explorer.
+            - Badly Configured Shares:
+                - Accessing a share means having access to the resources of the computer hosting it. So, badly configured shares exploitation can lead to:
+                    - Information disclosure
+                    - Unauthorized file access
+                    - Information leakage used to mount a targeted attack
+        - Null Sessions
+            - Null session attacks can be used to enumerate a lot of information. Attackers can steal information about:
+                - Passwords
+                - System users
+                - System groups
+                - Running system processes
+            - Null sessions are remotely exploitable; this means that attackers can use their computers to attack a vulnerable Windows machine. Moreover, this attack can be used to call remote APIs and remote procedure calls. Because of these factors, null session attacks had a huge impact on Windows ecosystems.
+            - Nowadays Windows is configured to be immune from this kind of attack. However, legacy hosts can still be vulnerable.
+            - A null session attack exploits an authentication vulnerability for Windows Administrative Shares; this lets an attacker connect to a local or remote share without authentication.
+            - Enumerating Windows Shares:
+                - Enumerating shares is the first step needed to exploit a Windows machine vulnerable to null sessions.
+                - NbtStat:
+                    - In Windows, the most common command to use when enumerating Windows shares is `nbtstat`
+                    - Nbtstat is a Windows command line tool that can display information about a target.
+                - NET VIEW:
+                    - Once an attacker knows that a machine has the File Server service running, they can enumerate the shares by using the NET VIEW command. `NET VIEW <target IP>`.
+                - Nmblookup:
+                    - To perform the same operations of nbtstat, you can use nmblookup with the same command line switch: `nmblookup -A <target IP address>`.
+                - Smbclient:
+                    - The Samba suite also provides smbclient, an FTP-like client to access Windows shares; this tool can, among other things, enumerate the shares provided by a host: `smbclient -L //<IP address> -N`
+            - Checking for Null Sessions:
+                - Once we have detected that the File and Printer Sharing service is active and we have enumerated the available shares on a target, it is time to check if a null session attack is possible.
+                - Checking for Null Sessions with Windows:
+                    - To connect: `NET USE \\<target IP address>\IPC$ ' ' /u:' ' `
+                    - This tells Windows to connect to the IPC$ share by using an empty password and an empty username.
+                    - The previous command establishes a connection to the IPC$ administrative share without specifying a user; this is possible because our target host is vulnerable to null session attacks. This test only works with the IPC$
+                - Checking for Null Sessions with Linux:
+                    - `smbclient //<target IP address>/IPC$ -N`
+            - Exploiting Null Sessions:
+                - Exploiting null sessions can be done by using the Windows NET command, but there are some tools which can automate this task.
+                - Exploiting Null Sessions with Enum:
+                    - Enum - a command line utility that can retrieve information from a system vulnerable to null session attacks.
+                    - `enum -S <target IP address>` - "-S" parameter lets you enumerate the shares of a machine
+                    - "-U" enumerate the users
+                    - If you need to mount a network authentication attack, you ca check the password policy by using the "-P" parameter
+                - Exploiting Null Sessions with Winfo:
+                    - Winfo is another command line utility you can use to automate null session exploitation. To use it, you just need to specify the target IP address and use the "-n" command line switch to tell the tool to use null sessions. `winfo <target IP address> -n`
+                - Exploiting Null Sessions with Enum4linux:
+                    - A penetration tester can also exploit null sessions by using enum4linux, a PERL script that can perform the same operations of enum and Winfo.
+                    - By default, it performs:
+                        - User enumeration
+                        - Share enumeration
+                        - Group and member enumeration
+                        - Password policy extraction
+                        - OS information detection
+                        - A nmblookup run
+                        - Printer information extraction
+                - About Null Sessions:
+                    - Null sessions are a piece of the history of Windows hacking. Even if by default they are not enabled on modern Microsoft operating systems, you can sometimes find them on enterprise networks; this is because of retro compatibility with legacy systems and applications.
+        - ARP Poisoning
+            - ARP Poisoning is a powerful attack you can use to intercept traffic on a switched network.
+            - To identify the MAC address of a host, computers use the Address Resolution Protocol.
+            - After the MAC address resolution is complete, hosts save the destination address in their ARP cache table.
+            - If an attacker manipulates the ARP tables of the two parties involved in a communication, it will be able to sniff the whole communication, thus performing a man-in-the-middle (MITM) attack! This can be done by sending gratuitous ARP replies.
+            - ARP Poisoning Actors:
+                - During an ARP poisoning attack, three actors are involved:
+                    - Two network nodes (clients, servers, routers, printers, ...)
+                    - The attacker
+            - Gratuitous ARP Replies:
+                - The attacker can manipulate other hosts' ARP cache tables by sending gratuitous ARP replies.
+                - Gratuitous ARP replies are unsolicited ARP reply messages. In other words, the attacker sends a reply without waiting for a host to perform a request.
+                - The attacker exploits gratuitous ARP messages to tell the victims that they can reach a specific IP address at the attacker's machine MAC address.
+                - As soon as the ARP cache table contains fake information, every packet of every communication between the poisoned nodes will be sent to the attacker's machine.
+                - The attacker can prevent the poisoned entry from expiring by sending gratuitous ARP replies every 30 seconds or so.
+            - Forwarding and Mangling Packets:
+                - As soon as the attacker's machine receives the packets, it must forward them to the correct destination. Otherwise, the communication between the victim hosts will not work.
+                - This operation lets the hacker sniff traffic between the poisoned hosts even if the machines sit on a switches network.
+                - This activity can go further because the attacker can also change the content of the packets thus manipulating the information exchanged by the two parties!
+            - Local to Remote Man in the Middle:
+                - This kind of attack can be even used on an entire network and against a router, letting an attacker intercept the communication between a LAN and the Internet!
+            - Dsniff Arpspoof:
+                - Dsniff is a collection of tools for network auditing and penetration testing. It includes arpspoof a utility designed to intercept traffic on a switches LAN.
+                - Before running the tool, you have to enable the Linux Kernel IP Forwarding, a feature that transforms a Linux box into a router.
+                - By enabling IP forwarding, you tell your machine to forward the packets you intercept to the real destination host: `echo 1 > /proc/sys/net/ipv4/ip_forward`
+                - You can then run arpspoof: `arpspoof -i <interface> -t <target> -r <host>`
+                    - Interface is the NIC you want to use, for example, eth0 for your local LAN or tap0.
+                    - Target and Host are the victims IP addresses.
+        - Metasploit
+            - Metasploit is an open-source framework used for penetration testing and exploit development. It is available for MacOSX, Windows and Linux operating systems.
+            - Metasploit gives you a wide array of community contributed exploits and attack vectors that can be used against various systems and technologies. Moreover, it is extensible and can be used to automate your own exploits.
+            - MSFConsole:
+                - Metasploit has a web interface, a command line interface and a console interface, MSFConsole.
+                - The basic workflow to exploit a target by using MSFConsole is:
+                    - Identifying a vulnerable service
+                    - Searching for a proper exploit for that service
+                    - Loading and configuring the exploit
+                    - Loading and configuring the payload you want to use
+                    - Running the exploit code and getting access to the vulnerable machine
+                    - You can start MSFConsole by typing the following on the command line: `msfconsole`
+            - Identifying a Vulnerable Service:
+                - The information gathering phase is of paramount importance for a successful penetration test. Moreover, you need to perform a vulnerability assessment step before moving to the actual exploitation phase.
+            - Searching:
+                - Metasploit contains exploit code and other features in its modules. `msf> serach <serachTerm>`
+                - Another way to display exploits is by using the show command: `show exploits`
+            - Configuring an Exploit:
+                - After choosing the exploit you want to use, you can enable it by using the "use" command, followed by the exploit path: `use <exploit/path>`
+                - Note how MSFConsole promptly changes when an exploit is selected; this happens because Metasploit uses a file-system-like hierarchy to store encoders, nops, exploits, payloads, and auxiliary modules.
+                - If you want to go back to the main msf prompt, you can use the "back" command.
+                - Once an exploit is loaded, you can view related information using the "info" command.
+                - You can also check its options by using the "show options" command.
+                - To configure an option, you have to use the "set" command.
+            - Configuring a Payload:
+                - To run an exploit, a payload is needed. Payloads are pieces of code injected by an exploit module into the victim machine or service.  
+                - A payload is used by an attacker to get:
+                    - An OS Shell
+                    - A VNC or RDP connection
+                    - A Meterpreter shell
+                    - The execution of an attacker-supplied application.
+                - Metasploit provides different payloads for different operating systems, with different architectures, and with different features. You can list them all by typing "show payloads" on the MSFConsole prompt.
+                - If you launch a "show payloads" command when you are using an exploit, you will see only the payloads which work with that specific exploit.
+                - You can choose a payload to use by issuing the "set payload" command, followed by the payload name. Then you can check its options by using the show options command.
+                - To configure a payload, use the "set" command.
+                - After configuring the exploit and the payload, you are ready to launch the attack!
+            - Running an Exploit:
+                - Launching an exploit is just a matter of issuing the "exploit" command on the command line.
+                - Most of the time, penetration testers aim to gain a shell on the target machine. They can achieve that by choosing the right Metasploit payload. A special payload, with many useful features under the pentesting point of view, is Meterpreter.
+        - Meterpreter
+            - Meterpreter is a very powerful shell which runs on Android, BSD, Java, Linux, PHP, Python, and Windows vulnerable applications and services.
+            - Meterpreter is more than a simple shell. It provides advanced features to gather information, transfer files between the attacker and victim machines, install backdoors and more.
+            - To list all the possible Meterpreter payloads, you can run a search in MSFConsole: `search meterpreter`
+            - Choosing the payload is a matter of using the "set" command. For example, when attacking a Windows machine, you will use: `set payload <exploit/path>`
+            - Bind and Reverse:
+                - Meterpreter can both wait for a connection on the target machine or connect back to the attacker machine. Its most used configurations are "bind_tcp" and "reverse_tcp"
+                    - "bind_tcp" runs a server process on the target machine that waits for connections from the attacker machine
+                    - "reverse_tcp" performs a TCP connection back to the attacker machine. As you saw in the Backdoors chapter, this feature could help evade firewall rules.
+            - Launching Meterpreter:
+                - After you set the right payload for your attack, you have to run the exploit to get a Meterpreter session.
+                - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2FSoldieR%2Fa6q_lHeb1E.png?alt=media&token=76fcfcbf-bb46-4a66-964d-a86a964233eb)
+                - A Meterpreter session is an advanced shell on the target machine.
+            - Sessions:
+                - A single instance of MSFConsole can host multiple Meterpreter sessions; this means that you can instance multiple shells on your targets and switch between them.
+                - You can switch from a Meterpreter session to the console by using the background command: `meterpreter> background`
+                - You can then list currently opened sessions by using the `sessions -l` command
+                - To resume a background session, you have to use the `sessions -i` command, followed with the number.
+            - Information Gathering with Meterpreter:
+                - Meterpreter lets you perform information gathering on the exploited machine and the network it is attached to. You can retrieve:
+                    - Information about the machine and the OS
+                    - The network configuration in use
+                    - The routing table of the compromised host
+                    - Information about the user running the exploited process
+                - System Information:
+                    - The `sysinfo` command lets you retrieve information about the exploited machine: name, operating system, architecture, system language and the Meterpreter version it is running.
+                - Network Configuration:
+                    - The `ifconfig` command prints the network configuration.
+                - Routing Information:
+                    - You can check routing information with the `route` command.
+                - Current User:
+                    - To know which user is running the process exploited by Metasploit, you can use the `getuid` command.
+            - Privilege Escalation:
+                - If the owner of the process does not have high privileges on the victim system, you can use the `getsystem` command. This command runs a privilege escalation routine on the target machine. In Windows environments, the system user has the highest privileges on a machine.
+                - Bypassing UAC:
+                    - Note that in modern Windows operating systems, the User Account Control (UAC) policy prevents privilege escalation.
+                    - You can bypass that restriction by using the `bypassuac` module.
+                    - This module takes just one argument, the Meterpreter session where you want to bypass UAC.
+                    - After launching the exploit, you get a new Meterpreter session.
+                    - The new session has the UAC policy disabled, so the `getsystem` command works!
+            - Dumping the Password Database:
+                - You can dump the passowrds database and save it for an offline cracking session. The hashdump module dumps the password database of an Windows machine.
+                - `use post/windows/gather/hashdump`
+                - `exploit`
+            - Exploring the Victim System:
+                - Meterpreter lets you navigate the victim's hard drive by using Unix-like shell commands: pwd, ls, etc.,.
+            - Uploading and Downloading:
+                - You can upload and download files by using the homonymous commands.
+                - `meterpreter> download logs.txt /root/`
+                - `meterpreter> upload /root/backdoor.ext C:\\Windows`
+            - Running an OS Shell:
+                - You can also run a standard operating system shell: `meterpreter> shell`
+            - The Help:
+                - Every Meterpreter command has brief help information. You can check it by using the "-h" parameter on the command line.
